@@ -17,6 +17,8 @@
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('GPUBlocks must run unsandboxed');
     }
+    var pen
+    var lists
     const operatorsvg = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2NC4xIiBoZWlnaHQ9IjY0LjI0MDgyIiB2aWV3Qm94PSIwLDAsNjQuMSw2NC4yNDA4MiI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIwNy45NSwtMTQ5LjU1KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMTIuNTgxODEsMTU4Ljk4NDc0YzAsLTIuMjA5MTQgMS43OTA4NiwtNCA0LC00aDQ2LjgzNjM5YzIuMjA5MTQsMCA0LDEuNzkwODYgNCw0djQxLjU1NjA4YzAsMi4yMDkxNCAtMS43OTA4Niw0IC00LDRoLTUuMjU2OTdjLTIsMCAtMywxIC00LDJsLTQsNGMtMSwxIC0yLDIgLTQsMmgtMTJjLTIsMCAtMywtMSAtNCwtMmwtNCwtNGMtMSwtMSAtMiwtMiAtNCwtMmgtNS41Nzk0MmMtMi4yMDkxNCwwIC00LC0xLjc5MDg2IC00LC00eiIgZmlsbD0iIzM4OTQzOCIgc3Ryb2tlPSIjMzg5NDM4IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjEyLjU4MTgxLDE1NS4yMjE5NmMwLC0yLjIwOTE0IDEuNzkwODYsLTQgNCwtNGg0Ni44MzYzOWMyLjIwOTE0LDAgNCwxLjc5MDg2IDQsNHY0MS41NTYwOGMwLDIuMjA5MTQgLTEuNzkwODYsNCAtNCw0aC01LjI1Njk3Yy0yLDAgLTMsMSAtNCwybC00LDRjLTEsMSAtMiwyIC00LDJoLTEyYy0yLDAgLTMsLTEgLTQsLTJsLTQsLTRjLTEsLTEgLTIsLTIgLTQsLTJoLTUuNTc5NDJjLTIuMjA5MTQsMCAtNCwtMS43OTA4NiAtNCwtNHoiIGZpbGw9IiM1OWMwNTkiIHN0cm9rZT0iIzZmZjI2ZiIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIyNC4xNDE5NSwxNjUuMzcwODZjMCwtMS4zNzY1NyAxLjAwNzksLTIuNDkyNSAyLjI1MTIxLC0yLjQ5MjVoMjYuMzU5NjdjMS4yNDMzMSwwIDIuMjUxMjIsMS4xMTU5MyAyLjI1MTIyLDIuNDkyNXYyNS44OTQ2NGMwLDEuMzc2NTcgLTEuMDA3OSwyLjQ5MjQ5IC0yLjI1MTIyLDIuNDkyNDloLTI2LjM1OTY3Yy0xLjI0MzMxLDAgLTIuMjUxMjEsLTEuMTE1OTMgLTIuMjUxMjEsLTIuNDkyNDl6IiBmaWxsPSIjMjE0NzIxIiBzdHJva2U9IiMyMTQ3MjEiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yMjAuMTk5OSwxNzEuODQ1MzJoMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjE0NzIxIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMjAuMTk5OSwxODQuNzkxMDhoMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjE0NzIxIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTkuMTEwMDEsMTcxLjg0NTMyaC0xMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMTQ3MjEiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTI1OS4xMTAwMSwxODQuNzkxMDhoLTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIxNDcyMSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE5Ny43NzMyNHYtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjE0NzIxIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNDYuMTI3ODcsMTg2LjQ1NjUzdjExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIxNDcyMSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE3MC4xNzk4NXYtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjE0NzIxIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNDYuMTI3ODcsMTcwLjE3OTg1di0xMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMTQ3MjEiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTIyOS45MDA2NSwxODQuODUxNTljLTEuMjE0NjIsMCAtMi4yNDczLC0wLjI2MDk1IC0zLjA5ODA1LC0wLjc4Mjg1Yy0wLjg0ODEzLC0wLjUyNDkzIC0xLjQ5MzQsLTEuMjU5MjQgLTEuOTM1NzksLTIuMjAyOTFjLTAuNDQyMzksLTAuOTQzNjcgLTAuNjYzNTgsLTIuMDQ1MTMgLTAuNjYzNTgsLTMuMzA0MzZjMCwtMC45ODAwOCAwLjEzMjE5LC0xLjg2MzA3IDAuMzk2NTgsLTIuNjQ4OTVjMC4yNjcwMSwtMC43ODU4OCAwLjY1MTgxLC0xLjQ2MTAyIDEuMTU0NDEsLTIuMDI1NGMwLjUwMjYsLTAuNTY3NDEgMS4xMTc3NiwtMC45OTgyOSAxLjg0NTQ4LC0xLjI5MjYxYzAuNzMwMzQsLTAuMjk3MzYgMS41NTc1MywtMC40NDYwNCAyLjQ4MTU4LC0wLjQ0NjA0YzAuNTAyNiwwIDEuMDE1NjcsMC4wNTYxNCAxLjUzOTIxLDAuMTY4NGMwLjUyMzU0LDAuMTA5MjMgMS4wMzY2MSwwLjMxNDA1IDEuNTM5MjEsMC42MTQ0NWMwLjI1OTE1LDAuMTM5NTggMC40MzU4NSwwLjMzNTI5IDAuNTMwMDksMC41ODcxNGMwLjA5Njg2LDAuMjUxODUgMC4xMjgyNywwLjUxNDMxIDAuMDk0MjQsMC43ODc0Yy0wLjAzNDAzLDAuMjczMDkgLTAuMTE5MTEsMC41MjM0MiAtMC4yNTUyMiwwLjc1MDk5Yy0wLjEzNjEyLDAuMjI3NTcgLTAuMzIwNjcsMC4zNzkyOSAtMC41NTM2NCwwLjQ1NTE0Yy0wLjIzMDM2LDAuMDc1ODYgLTAuNDkwODIsMC4wMzc5MyAtMC43ODEzOCwtMC4xMTM3OWMtMC4zMDEwMywtMC4xNjM4NSAtMC42MjgyNSwtMC4yODk3NyAtMC45ODE2NCwtMC4zNzc3N2MtMC4zNTA3NywtMC4wODggLTAuNzIyNDksLTAuMTMxOTkgLTEuMTE1MTQsLTAuMTMxOTljLTAuNjcyNzUsMCAtMS4yMzI5MywwLjE0MTA5IC0xLjY4MDU2LDAuNDIzMjhjLTAuNDQ3NjMsMC4yNzkxNiAtMC43ODI2OSwwLjY5MzM0IC0xLjAwNTIsMS4yNDI1NWMtMC4yMTk4OSwwLjU0NjE3IC0wLjMyOTgzLDEuMjE1MjQgLTAuMzI5ODMsMi4wMDcyYzAsMS4xODk0NSAwLjI1MTMsMi4wODc2MSAwLjc1MzksMi42OTQ0N2MwLjUwMjYsMC42MDM4MiAxLjI0NjAzLDAuOTA1NzQgMi4yMzAyOCwwLjkwNTc0YzAuMzAzNjUsMCAwLjYzMzQ4LC0wLjAzNDg5IDAuOTg5NDksLTAuMTA0NjhjMC4zNTYwMSwtMC4wNjk3OSAwLjcxNDYzLC0wLjE2ODQgMS4wNzU4OCwtMC4yOTU4NGwtMC41MTA0NSwxLjIwNjE0di0yLjk5MDMxaC0xLjA1NjI0Yy0wLjM0MDMsMCAtMC42MDQ2OSwtMC4wOTg2MSAtMC43OTMxNiwtMC4yOTU4NGMtMC4xODU4NiwtMC4yMDAyNiAtMC4yNzg3OCwtMC40ODA5NCAtMC4yNzg3OCwtMC44NDIwMmMwLC0wLjM2MTA4IDAuMDkyOTMsLTAuNjM3MiAwLjI3ODc4LC0wLjgyODM2YzAuMTg4NDcsLTAuMTkxMTYgMC40NTI4NiwtMC4yODY3NCAwLjc5MzE2LC0wLjI4Njc0aDIuMjMwMjhjMC4zNTMzOSwwIDAuNjIzMDEsMC4xMDc3MiAwLjgwODg3LDAuMzIzMTVjMC4xODU4NiwwLjIxNTQ0IDAuMjc4NzgsMC41MjY0NSAwLjI3ODc4LDAuOTMzMDV2My44NjQxOWMwLDAuMzQ4OTQgLTAuMDYyODIsMC42NDYzMSAtMC4xODg0NywwLjg5MjA4Yy0wLjEyNTY1LDAuMjQyNzQgLTAuMzI0NTksMC40MTcyMiAtMC41OTY4NCwwLjUyMzQyYy0wLjQ3MTE4LDAuMTg1MDkgLTAuOTg0MjYsMC4zMjkyMiAtMS41MzkyMSwwLjQzMjM5Yy0wLjU1MjM0LDAuMTA2MiAtMS4xMDQ2NywwLjE1OTMgLTEuNjU3LDAuMTU5M3pNMjM2LjUxMTYxLDE4NC44MTk3MWMtMC40NDIzOSwwIC0wLjc4NCwtMC4xNDI2MSAtMS4wMjQ4MywtMC40Mjc4NGMtMC4yNDA4MywtMC4yODgyNiAtMC4zNjEyNCwtMC42ODg3OSAtMC4zNjEyNCwtMS4yMDE1OHYtOS4yMjU4MmMwLC0wLjUyNDkzIDAuMTIzMDMsLTAuOTI2OTggMC4zNjkxLC0xLjIwNjE0YzAuMjQ2MDYsLTAuMjc5MTYgMC41OTAyOSwtMC40MTg3MyAxLjAzMjY4LC0wLjQxODczaDMuNzEwNTljMS4yMDQxNCwwIDIuMTM0NzMsMC4zNTgwNSAyLjc5MTc4LDEuMDc0MTRjMC42NTk2NiwwLjcxNjEgMC45ODk0OSwxLjcwMzc2IDAuOTg5NDksMi45NjNjMCwxLjI1OTI0IC0wLjMyOTgzLDIuMjQ2OTEgLTAuOTg5NDksMi45NjNjLTAuNjU3MDQsMC43MTYxIC0xLjU4NzYzLDEuMDc0MTQgLTIuNzkxNzgsMS4wNzQxNGgtMi4zNDAyMnYyLjc3NjM5YzAsMC41MTI4IC0wLjExNTE4LDAuOTEzMzIgLTAuMzQ1NTQsMS4yMDE1OGMtMC4yMzAzNiwwLjI4NTIyIC0wLjU3NzIsMC40Mjc4NCAtMS4wNDA1MywwLjQyNzg0ek0yMzcuODk3NjgsMTc3Ljk0NzAzaDEuODU3MjZjMC41MjA5MiwwIDAuOTIxNDMsLTAuMTMwNDcgMS4yMDE1MiwtMC4zOTE0MmMwLjI4MjcxLC0wLjI2MDk1IDAuNDI0MDcsLTAuNjUzODkgMC40MjQwNywtMS4xNzg4M2MwLC0wLjUzNzA3IC0wLjE0MTM1LC0wLjkzMzA1IC0wLjQyNDA3LC0xLjE4NzkzYy0wLjI4MDA5LC0wLjI1NzkxIC0wLjY4MDYsLTAuMzg2ODcgLTEuMjAxNTIsLTAuMzg2ODdoLTEuODU3MjZ6TTI0OS40MTAzOSwxODQuODUxNTljLTAuNzc0ODQsMCAtMS40NTkzNywtMC4xMTM3OSAtMi4wNTM1OSwtMC4zNDEzNmMtMC41OTE2LC0wLjIyNzU3IC0xLjA5MTU4LC0wLjU2NzQxIC0xLjQ5OTk0LC0xLjAxOTUzYy0wLjQwNTc1LC0wLjQ1NTE0IC0wLjcxMjAxLC0xLjAyMjU2IC0wLjkxODgxLC0xLjcwMjI1Yy0wLjIwNDE4LC0wLjY4MjcyIC0wLjMwNjI3LC0xLjQ3MzE2IC0wLjMwNjI3LC0yLjM3MTMxdi01LjYxMTk2YzAsLTAuNTM0MDQgMC4xMjA0MiwtMC45Mzc2IDAuMzYxMjQsLTEuMjEwNjljMC4yNDA4MywtMC4yNzYxMiAwLjU4MjQ0LC0wLjQxNDE4IDEuMDI0ODMsLTAuNDE0MThjMC40NTI4NiwwIDAuNzk3MDksMC4xMzgwNiAxLjAzMjY4LDAuNDE0MThjMC4yMzU1OSwwLjI3MzA5IDAuMzUzMzksMC42NzY2NSAwLjM1MzM5LDEuMjEwNjl2NS42NDgzN2MwLDAuODk1MTIgMC4xNzAxNSwxLjU3MDI1IDAuNTEwNDUsMi4wMjU0YzAuMzQyOTIsMC40NTUxNCAwLjg0MTU5LDAuNjgyNzIgMS40OTYwMiwwLjY4MjcyYzAuNjQzOTYsMCAxLjEzNjA4LC0wLjIyNzU3IDEuNDc2MzgsLTAuNjgyNzJjMC4zNDI5MiwtMC40NTUxNCAwLjUxNDM4LC0xLjEzMDI4IDAuNTE0MzgsLTIuMDI1NHYtNS42NDgzN2MwLC0wLjUzNDA0IDAuMTE3NzksLTAuOTM3NiAwLjM1MzM5LC0xLjIxMDY5YzAuMjM1NTksLTAuMjc2MTIgMC41NzQ1OSwtMC40MTQxOCAxLjAxNjk4LC0wLjQxNDE4YzAuNDQyMzksMCAwLjc3ODc2LDAuMTM4MDYgMS4wMDkxMiwwLjQxNDE4YzAuMjMyOTcsMC4yNzMwOSAwLjM0OTQ2LDAuNjc2NjUgMC4zNDk0NiwxLjIxMDY5djUuNjExOTZjMCwxLjIwMTU4IC0wLjE3OTMxLDIuMjA3NDYgLTAuNTM3OTQsMy4wMTc2MmMtMC4zNTYwMSwwLjgwNzEyIC0wLjg4NjA5LDEuNDEyNDcgLTEuNTkwMjUsMS44MTYwM2MtMC43MDE1NCwwLjQwMDUzIC0xLjU2NTM4LDAuNjAwNzkgLTIuNTkxNTMsMC42MDA3OXoiIGZpbGw9IiM1OWMwNTkiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIi8+PHBhdGggZD0iTTIwNy45NSwyMTMuNjUwMDF2LTY0LjFoNjQuMXY2NC4xeiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MzIuMDUwMDAwMDAwMDAwMDE6MzAuNDQ5OTk1LS0+"
     const varsvg = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2NC4xIiBoZWlnaHQ9IjY0LjI0MDgiIHZpZXdCb3g9IjAsMCw2NC4xLDY0LjI0MDgiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMDcuOTUsLTE0OS41NTAwNSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjA3Ljk1LDIxMy42NTAwNXYtNjQuMWg2NC4xdjY0LjF6IiBmaWxsPSJub25lIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjEyLjU4MTgxLDE1OC45ODQ3N2MwLC0yLjIwOTE0IDEuNzkwODYsLTQgNCwtNGg0Ni44MzYzOWMyLjIwOTE0LDAgNCwxLjc5MDg2IDQsNHY0MS41NTYwOGMwLDIuMjA5MTQgLTEuNzkwODYsNCAtNCw0aC01LjI1Njk3Yy0yLDAgLTMsMSAtNCwybC00LDRjLTEsMSAtMiwyIC00LDJoLTEyYy0yLDAgLTMsLTEgLTQsLTJsLTQsLTRjLTEsLTEgLTIsLTIgLTQsLTJoLTUuNTc5NDJjLTIuMjA5MTQsMCAtNCwtMS43OTA4NiAtNCwtNHoiIGZpbGw9IiNkYjZlMDAiIHN0cm9rZT0iI2RiNmUwMCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIxMi41ODE4MSwxNTUuMjIxOTljMCwtMi4yMDkxNCAxLjc5MDg2LC00IDQsLTRoNDYuODM2MzljMi4yMDkxNCwwIDQsMS43OTA4NiA0LDR2NDEuNTU2MDhjMCwyLjIwOTE0IC0xLjc5MDg2LDQgLTQsNGgtNS4yNTY5N2MtMiwwIC0zLDEgLTQsMmwtNCw0Yy0xLDEgLTIsMiAtNCwyaC0xMmMtMiwwIC0zLC0xIC00LC0ybC00LC00Yy0xLC0xIC0yLC0yIC00LC0yaC01LjU3OTQyYy0yLjIwOTE0LDAgLTQsLTEuNzkwODYgLTQsLTR6IiBmaWxsPSIjZmY4YzFhIiBzdHJva2U9IiNmZmJhNzUiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yMjQuMTQxOTUsMTY1LjM3MDg5YzAsLTEuMzc2NTcgMS4wMDc5LC0yLjQ5MjUgMi4yNTEyMSwtMi40OTI1aDI2LjM1OTY3YzEuMjQzMzEsMCAyLjI1MTIyLDEuMTE1OTMgMi4yNTEyMiwyLjQ5MjV2MjUuODk0NjRjMCwxLjM3NjU3IC0xLjAwNzksMi40OTI0OSAtMi4yNTEyMiwyLjQ5MjQ5aC0yNi4zNTk2N2MtMS4yNDMzMSwwIC0yLjI1MTIxLC0xLjExNTkzIC0yLjI1MTIxLC0yLjQ5MjQ5eiIgZmlsbD0iIzU5MzEwOSIgc3Ryb2tlPSIjNTkzMTA5IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjIwLjE5OTksMTcxLjg0NTM1aDExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU5MzEwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjIwLjE5OTksMTg0Ljc5MTExaDExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU5MzEwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjU5LjExMDAxLDE3MS44NDUzNWgtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTkzMTA5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTkuMTEwMDEsMTg0Ljc5MTExaC0xMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiM1OTMxMDkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTIzMy4xODIwNiwxOTcuNzczMjd2LTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU5MzEwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjQ2LjEyNzg3LDE5Ny43NzMyNnYtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTkzMTA5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzMuMTgyMDYsMTcwLjE3OTg4di0xMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiM1OTMxMDkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTI0Ni4xMjc4NywxNzAuMTc5ODh2LTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU5MzEwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjI5LjkwMDY1LDE4NC44NTE2MmMtMS4yMTQ2MiwwIC0yLjI0NzMsLTAuMjYwOTUgLTMuMDk4MDUsLTAuNzgyODVjLTAuODQ4MTMsLTAuNTI0OTMgLTEuNDkzNCwtMS4yNTkyNCAtMS45MzU3OSwtMi4yMDI5MWMtMC40NDIzOSwtMC45NDM2NyAtMC42NjM1OCwtMi4wNDUxMyAtMC42NjM1OCwtMy4zMDQzNmMwLC0wLjk4MDA4IDAuMTMyMTksLTEuODYzMDcgMC4zOTY1OCwtMi42NDg5NWMwLjI2NzAxLC0wLjc4NTg4IDAuNjUxODEsLTEuNDYxMDIgMS4xNTQ0MSwtMi4wMjU0YzAuNTAyNiwtMC41Njc0MSAxLjExNzc2LC0wLjk5ODI5IDEuODQ1NDgsLTEuMjkyNjFjMC43MzAzNCwtMC4yOTczNiAxLjU1NzUzLC0wLjQ0NjA0IDIuNDgxNTgsLTAuNDQ2MDRjMC41MDI2LDAgMS4wMTU2NywwLjA1NjE0IDEuNTM5MjEsMC4xNjg0YzAuNTIzNTQsMC4xMDkyMyAxLjAzNjYxLDAuMzE0MDUgMS41MzkyMSwwLjYxNDQ1YzAuMjU5MTUsMC4xMzk1OCAwLjQzNTg1LDAuMzM1MjkgMC41MzAwOSwwLjU4NzE0YzAuMDk2ODYsMC4yNTE4NSAwLjEyODI3LDAuNTE0MzEgMC4wOTQyNCwwLjc4NzRjLTAuMDM0MDMsMC4yNzMwOSAtMC4xMTkxMSwwLjUyMzQyIC0wLjI1NTIyLDAuNzUwOTljLTAuMTM2MTIsMC4yMjc1NyAtMC4zMjA2NywwLjM3OTI5IC0wLjU1MzY0LDAuNDU1MTRjLTAuMjMwMzYsMC4wNzU4NiAtMC40OTA4MiwwLjAzNzkzIC0wLjc4MTM4LC0wLjExMzc5Yy0wLjMwMTAzLC0wLjE2Mzg1IC0wLjYyODI1LC0wLjI4OTc3IC0wLjk4MTY0LC0wLjM3Nzc3Yy0wLjM1MDc3LC0wLjA4OCAtMC43MjI0OSwtMC4xMzE5OSAtMS4xMTUxNCwtMC4xMzE5OWMtMC42NzI3NSwwIC0xLjIzMjkzLDAuMTQxMDkgLTEuNjgwNTYsMC40MjMyOGMtMC40NDc2MywwLjI3OTE2IC0wLjc4MjY5LDAuNjkzMzQgLTEuMDA1MiwxLjI0MjU1Yy0wLjIxOTg5LDAuNTQ2MTcgLTAuMzI5ODMsMS4yMTUyNCAtMC4zMjk4MywyLjAwNzJjMCwxLjE4OTQ1IDAuMjUxMywyLjA4NzYxIDAuNzUzOSwyLjY5NDQ3YzAuNTAyNiwwLjYwMzgyIDEuMjQ2MDMsMC45MDU3NCAyLjIzMDI4LDAuOTA1NzRjMC4zMDM2NSwwIDAuNjMzNDgsLTAuMDM0ODkgMC45ODk0OSwtMC4xMDQ2OGMwLjM1NjAxLC0wLjA2OTc5IDAuNzE0NjMsLTAuMTY4NCAxLjA3NTg4LC0wLjI5NTg0bC0wLjUxMDQ1LDEuMjA2MTR2LTIuOTkwMzFoLTEuMDU2MjRjLTAuMzQwMywwIC0wLjYwNDY5LC0wLjA5ODYxIC0wLjc5MzE2LC0wLjI5NTg0Yy0wLjE4NTg2LC0wLjIwMDI2IC0wLjI3ODc4LC0wLjQ4MDk0IC0wLjI3ODc4LC0wLjg0MjAyYzAsLTAuMzYxMDggMC4wOTI5MywtMC42MzcyIDAuMjc4NzgsLTAuODI4MzZjMC4xODg0NywtMC4xOTExNiAwLjQ1Mjg2LC0wLjI4Njc0IDAuNzkzMTYsLTAuMjg2NzRoMi4yMzAyOGMwLjM1MzM5LDAgMC42MjMwMSwwLjEwNzcyIDAuODA4ODcsMC4zMjMxNWMwLjE4NTg2LDAuMjE1NDQgMC4yNzg3OCwwLjUyNjQ1IDAuMjc4NzgsMC45MzMwNXYzLjg2NDE5YzAsMC4zNDg5NCAtMC4wNjI4MiwwLjY0NjMxIC0wLjE4ODQ3LDAuODkyMDhjLTAuMTI1NjUsMC4yNDI3NCAtMC4zMjQ1OSwwLjQxNzIyIC0wLjU5Njg0LDAuNTIzNDJjLTAuNDcxMTgsMC4xODUwOSAtMC45ODQyNiwwLjMyOTIyIC0xLjUzOTIxLDAuNDMyMzljLTAuNTUyMzQsMC4xMDYyIC0xLjEwNDY3LDAuMTU5MyAtMS42NTcsMC4xNTkzek0yMzYuNTExNjEsMTg0LjgxOTc0Yy0wLjQ0MjM5LDAgLTAuNzg0LC0wLjE0MjYxIC0xLjAyNDgzLC0wLjQyNzg0Yy0wLjI0MDgzLC0wLjI4ODI2IC0wLjM2MTI0LC0wLjY4ODc5IC0wLjM2MTI0LC0xLjIwMTU4di05LjIyNTgyYzAsLTAuNTI0OTMgMC4xMjMwMywtMC45MjY5OCAwLjM2OTEsLTEuMjA2MTRjMC4yNDYwNiwtMC4yNzkxNiAwLjU5MDI5LC0wLjQxODczIDEuMDMyNjgsLTAuNDE4NzNoMy43MTA1OWMxLjIwNDE0LDAgMi4xMzQ3MywwLjM1ODA1IDIuNzkxNzgsMS4wNzQxNGMwLjY1OTY2LDAuNzE2MSAwLjk4OTQ5LDEuNzAzNzYgMC45ODk0OSwyLjk2M2MwLDEuMjU5MjQgLTAuMzI5ODMsMi4yNDY5MSAtMC45ODk0OSwyLjk2M2MtMC42NTcwNCwwLjcxNjEgLTEuNTg3NjMsMS4wNzQxNCAtMi43OTE3OCwxLjA3NDE0aC0yLjM0MDIydjIuNzc2MzljMCwwLjUxMjggLTAuMTE1MTgsMC45MTMzMiAtMC4zNDU1NCwxLjIwMTU4Yy0wLjIzMDM2LDAuMjg1MjIgLTAuNTc3MiwwLjQyNzg0IC0xLjA0MDUzLDAuNDI3ODR6TTIzNy44OTc2OCwxNzcuOTQ3MDdoMS44NTcyNmMwLjUyMDkyLDAgMC45MjE0MywtMC4xMzA0NyAxLjIwMTUyLC0wLjM5MTQyYzAuMjgyNzEsLTAuMjYwOTUgMC40MjQwNywtMC42NTM4OSAwLjQyNDA3LC0xLjE3ODgzYzAsLTAuNTM3MDcgLTAuMTQxMzUsLTAuOTMzMDUgLTAuNDI0MDcsLTEuMTg3OTNjLTAuMjgwMDksLTAuMjU3OTEgLTAuNjgwNiwtMC4zODY4NyAtMS4yMDE1MiwtMC4zODY4N2gtMS44NTcyNnpNMjQ5LjQxMDM5LDE4NC44NTE2MmMtMC43NzQ4NCwwIC0xLjQ1OTM3LC0wLjExMzc5IC0yLjA1MzU5LC0wLjM0MTM2Yy0wLjU5MTYsLTAuMjI3NTcgLTEuMDkxNTgsLTAuNTY3NDEgLTEuNDk5OTQsLTEuMDE5NTNjLTAuNDA1NzUsLTAuNDU1MTQgLTAuNzEyMDEsLTEuMDIyNTYgLTAuOTE4ODEsLTEuNzAyMjVjLTAuMjA0MTgsLTAuNjgyNzIgLTAuMzA2MjcsLTEuNDczMTYgLTAuMzA2MjcsLTIuMzcxMzF2LTUuNjExOTZjMCwtMC41MzQwNCAwLjEyMDQyLC0wLjkzNzYgMC4zNjEyNCwtMS4yMTA2OWMwLjI0MDgzLC0wLjI3NjEyIDAuNTgyNDQsLTAuNDE0MTggMS4wMjQ4MywtMC40MTQxOGMwLjQ1Mjg2LDAgMC43OTcwOSwwLjEzODA2IDEuMDMyNjgsMC40MTQxOGMwLjIzNTU5LDAuMjczMDkgMC4zNTMzOSwwLjY3NjY1IDAuMzUzMzksMS4yMTA2OXY1LjY0ODM3YzAsMC44OTUxMiAwLjE3MDE1LDEuNTcwMjUgMC41MTA0NSwyLjAyNTRjMC4zNDI5MiwwLjQ1NTE0IDAuODQxNTksMC42ODI3MiAxLjQ5NjAyLDAuNjgyNzJjMC42NDM5NiwwIDEuMTM2MDgsLTAuMjI3NTcgMS40NzYzOCwtMC42ODI3MmMwLjM0MjkyLC0wLjQ1NTE0IDAuNTE0MzgsLTEuMTMwMjggMC41MTQzOCwtMi4wMjU0di01LjY0ODM3YzAsLTAuNTM0MDQgMC4xMTc3OSwtMC45Mzc2IDAuMzUzMzksLTEuMjEwNjljMC4yMzU1OSwtMC4yNzYxMiAwLjU3NDU5LC0wLjQxNDE4IDEuMDE2OTgsLTAuNDE0MThjMC40NDIzOSwwIDAuNzc4NzYsMC4xMzgwNiAxLjAwOTEyLDAuNDE0MThjMC4yMzI5NywwLjI3MzA5IDAuMzQ5NDYsMC42NzY2NSAwLjM0OTQ2LDEuMjEwNjl2NS42MTE5NmMwLDEuMjAxNTggLTAuMTc5MzEsMi4yMDc0NiAtMC41Mzc5NCwzLjAxNzYyYy0wLjM1NjAxLDAuODA3MTIgLTAuODg2MDksMS40MTI0NyAtMS41OTAyNSwxLjgxNjAzYy0wLjcwMTU0LDAuNDAwNTMgLTEuNTY1MzgsMC42MDA3OSAtMi41OTE1MywwLjYwMDc5eiIgZmlsbD0iI2ZmOGMxYSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMi4wNTAwMDAwMDAwMDAwMTozMC40NDk5NTQ5OTk5OTk5OS0tPg=="
     const controlsvg = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2NC4xIiBoZWlnaHQ9IjY0LjI0MDgiIHZpZXdCb3g9IjAsMCw2NC4xLDY0LjI0MDgiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMDcuOTUsLTE0OS41NTAwMykiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjA3Ljk1LDIxMy42NTAwNHYtNjQuMWg2NC4xdjY0LjF6IiBmaWxsPSJub25lIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjEyLjU4MTgxLDE1OC45ODQ3NmMwLC0yLjIwOTE0IDEuNzkwODYsLTQgNCwtNGg0Ni44MzYzOWMyLjIwOTE0LDAgNCwxLjc5MDg2IDQsNHY0MS41NTYwOGMwLDIuMjA5MTQgLTEuNzkwODYsNCAtNCw0aC01LjI1Njk3Yy0yLDAgLTMsMSAtNCwybC00LDRjLTEsMSAtMiwyIC00LDJoLTEyYy0yLDAgLTMsLTEgLTQsLTJsLTQsLTRjLTEsLTEgLTIsLTIgLTQsLTJoLTUuNTc5NDJjLTIuMjA5MTQsMCAtNCwtMS43OTA4NiAtNCwtNHoiIGZpbGw9IiNjZjhiMTciIHN0cm9rZT0iI2NmOGIxNyIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIxMi41ODE4MSwxNTUuMjIxOThjMCwtMi4yMDkxNCAxLjc5MDg2LC00IDQsLTRoNDYuODM2MzljMi4yMDkxNCwwIDQsMS43OTA4NiA0LDR2NDEuNTU2MDhjMCwyLjIwOTE0IC0xLjc5MDg2LDQgLTQsNGgtNS4yNTY5N2MtMiwwIC0zLDEgLTQsMmwtNCw0Yy0xLDEgLTIsMiAtNCwyaC0xMmMtMiwwIC0zLC0xIC00LC0ybC00LC00Yy0xLC0xIC0yLC0yIC00LC0yaC01LjU3OTQyYy0yLjIwOTE0LDAgLTQsLTEuNzkwODYgLTQsLTR6IiBmaWxsPSIjZmZhYjE5IiBzdHJva2U9IiNmZmNkNzUiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yMjQuMTQxOTUsMTY1LjM3MDg4YzAsLTEuMzc2NTcgMS4wMDc5LC0yLjQ5MjUgMi4yNTEyMSwtMi40OTI1aDI2LjM1OTY3YzEuMjQzMzEsMCAyLjI1MTIyLDEuMTE1OTMgMi4yNTEyMiwyLjQ5MjV2MjUuODk0NjRjMCwxLjM3NjU3IC0xLjAwNzksMi40OTI0OSAtMi4yNTEyMiwyLjQ5MjQ5aC0yNi4zNTk2N2MtMS4yNDMzMSwwIC0yLjI1MTIxLC0xLjExNTkzIC0yLjI1MTIxLC0yLjQ5MjQ5eiIgZmlsbD0iIzVhM2MwOSIgc3Ryb2tlPSIjNWEzYzA5IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjMxLjUxNjYsMTcxLjg0NTM0aC0xMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiM1YTNjMDkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTIyMC4xOTk5LDE4NC43OTExaDExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVhM2MwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjU5LjExMDAxLDE3MS44NDUzNGgtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNWEzYzA5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTkuMTEwMDEsMTg0Ljc5MTFoLTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVhM2MwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE5Ny43NzMyNnYtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNWEzYzA5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNDYuMTI3ODcsMTg2LjQ1NjU1djExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVhM2MwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE3MC4xNzk4N3YtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNWEzYzA5IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNDYuMTI3ODcsMTU4Ljg2MzE3djExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVhM2MwOSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjI5LjkwMDY1LDE4NC44NTE2MWMtMS4yMTQ2MiwwIC0yLjI0NzMsLTAuMjYwOTUgLTMuMDk4MDUsLTAuNzgyODVjLTAuODQ4MTMsLTAuNTI0OTMgLTEuNDkzNCwtMS4yNTkyNCAtMS45MzU3OSwtMi4yMDI5MWMtMC40NDIzOSwtMC45NDM2NyAtMC42NjM1OCwtMi4wNDUxMyAtMC42NjM1OCwtMy4zMDQzNmMwLC0wLjk4MDA4IDAuMTMyMTksLTEuODYzMDcgMC4zOTY1OCwtMi42NDg5NWMwLjI2NzAxLC0wLjc4NTg4IDAuNjUxODEsLTEuNDYxMDIgMS4xNTQ0MSwtMi4wMjU0YzAuNTAyNiwtMC41Njc0MSAxLjExNzc2LC0wLjk5ODI5IDEuODQ1NDgsLTEuMjkyNjFjMC43MzAzNCwtMC4yOTczNiAxLjU1NzUzLC0wLjQ0NjA0IDIuNDgxNTgsLTAuNDQ2MDRjMC41MDI2LDAgMS4wMTU2NywwLjA1NjE0IDEuNTM5MjEsMC4xNjg0YzAuNTIzNTQsMC4xMDkyMyAxLjAzNjYxLDAuMzE0MDUgMS41MzkyMSwwLjYxNDQ1YzAuMjU5MTUsMC4xMzk1OCAwLjQzNTg1LDAuMzM1MjkgMC41MzAwOSwwLjU4NzE0YzAuMDk2ODYsMC4yNTE4NSAwLjEyODI3LDAuNTE0MzEgMC4wOTQyNCwwLjc4NzRjLTAuMDM0MDMsMC4yNzMwOSAtMC4xMTkxMSwwLjUyMzQyIC0wLjI1NTIyLDAuNzUwOTljLTAuMTM2MTIsMC4yMjc1NyAtMC4zMjA2NywwLjM3OTI5IC0wLjU1MzY0LDAuNDU1MTRjLTAuMjMwMzYsMC4wNzU4NiAtMC40OTA4MiwwLjAzNzkzIC0wLjc4MTM4LC0wLjExMzc5Yy0wLjMwMTAzLC0wLjE2Mzg1IC0wLjYyODI1LC0wLjI4OTc3IC0wLjk4MTY0LC0wLjM3Nzc3Yy0wLjM1MDc3LC0wLjA4OCAtMC43MjI0OSwtMC4xMzE5OSAtMS4xMTUxNCwtMC4xMzE5OWMtMC42NzI3NSwwIC0xLjIzMjkzLDAuMTQxMDkgLTEuNjgwNTYsMC40MjMyOGMtMC40NDc2MywwLjI3OTE2IC0wLjc4MjY5LDAuNjkzMzQgLTEuMDA1MiwxLjI0MjU1Yy0wLjIxOTg5LDAuNTQ2MTcgLTAuMzI5ODMsMS4yMTUyNCAtMC4zMjk4MywyLjAwNzJjMCwxLjE4OTQ1IDAuMjUxMywyLjA4NzYxIDAuNzUzOSwyLjY5NDQ3YzAuNTAyNiwwLjYwMzgyIDEuMjQ2MDMsMC45MDU3NCAyLjIzMDI4LDAuOTA1NzRjMC4zMDM2NSwwIDAuNjMzNDgsLTAuMDM0ODkgMC45ODk0OSwtMC4xMDQ2OGMwLjM1NjAxLC0wLjA2OTc5IDAuNzE0NjMsLTAuMTY4NCAxLjA3NTg4LC0wLjI5NTg0bC0wLjUxMDQ1LDEuMjA2MTR2LTIuOTkwMzFoLTEuMDU2MjRjLTAuMzQwMywwIC0wLjYwNDY5LC0wLjA5ODYxIC0wLjc5MzE2LC0wLjI5NTg0Yy0wLjE4NTg2LC0wLjIwMDI2IC0wLjI3ODc4LC0wLjQ4MDk0IC0wLjI3ODc4LC0wLjg0MjAyYzAsLTAuMzYxMDggMC4wOTI5MywtMC42MzcyIDAuMjc4NzgsLTAuODI4MzZjMC4xODg0NywtMC4xOTExNiAwLjQ1Mjg2LC0wLjI4Njc0IDAuNzkzMTYsLTAuMjg2NzRoMi4yMzAyOGMwLjM1MzM5LDAgMC42MjMwMSwwLjEwNzcyIDAuODA4ODcsMC4zMjMxNWMwLjE4NTg2LDAuMjE1NDQgMC4yNzg3OCwwLjUyNjQ1IDAuMjc4NzgsMC45MzMwNXYzLjg2NDE5YzAsMC4zNDg5NCAtMC4wNjI4MiwwLjY0NjMxIC0wLjE4ODQ3LDAuODkyMDhjLTAuMTI1NjUsMC4yNDI3NCAtMC4zMjQ1OSwwLjQxNzIyIC0wLjU5Njg0LDAuNTIzNDJjLTAuNDcxMTgsMC4xODUwOSAtMC45ODQyNiwwLjMyOTIyIC0xLjUzOTIxLDAuNDMyMzljLTAuNTUyMzQsMC4xMDYyIC0xLjEwNDY3LDAuMTU5MyAtMS42NTcsMC4xNTkzek0yMzYuNTExNjEsMTg0LjgxOTczYy0wLjQ0MjM5LDAgLTAuNzg0LC0wLjE0MjYxIC0xLjAyNDgzLC0wLjQyNzg0Yy0wLjI0MDgzLC0wLjI4ODI2IC0wLjM2MTI0LC0wLjY4ODc5IC0wLjM2MTI0LC0xLjIwMTU4di05LjIyNTgyYzAsLTAuNTI0OTMgMC4xMjMwMywtMC45MjY5OCAwLjM2OTEsLTEuMjA2MTRjMC4yNDYwNiwtMC4yNzkxNiAwLjU5MDI5LC0wLjQxODczIDEuMDMyNjgsLTAuNDE4NzNoMy43MTA1OWMxLjIwNDE0LDAgMi4xMzQ3MywwLjM1ODA1IDIuNzkxNzgsMS4wNzQxNGMwLjY1OTY2LDAuNzE2MSAwLjk4OTQ5LDEuNzAzNzYgMC45ODk0OSwyLjk2M2MwLDEuMjU5MjQgLTAuMzI5ODMsMi4yNDY5MSAtMC45ODk0OSwyLjk2M2MtMC42NTcwNCwwLjcxNjEgLTEuNTg3NjMsMS4wNzQxNCAtMi43OTE3OCwxLjA3NDE0aC0yLjM0MDIydjIuNzc2MzljMCwwLjUxMjggLTAuMTE1MTgsMC45MTMzMiAtMC4zNDU1NCwxLjIwMTU4Yy0wLjIzMDM2LDAuMjg1MjIgLTAuNTc3MiwwLjQyNzg0IC0xLjA0MDUzLDAuNDI3ODR6TTIzNy44OTc2OCwxNzcuOTQ3MDZoMS44NTcyNmMwLjUyMDkyLDAgMC45MjE0MywtMC4xMzA0NyAxLjIwMTUyLC0wLjM5MTQyYzAuMjgyNzEsLTAuMjYwOTUgMC40MjQwNywtMC42NTM4OSAwLjQyNDA3LC0xLjE3ODgzYzAsLTAuNTM3MDcgLTAuMTQxMzUsLTAuOTMzMDUgLTAuNDI0MDcsLTEuMTg3OTNjLTAuMjgwMDksLTAuMjU3OTEgLTAuNjgwNiwtMC4zODY4NyAtMS4yMDE1MiwtMC4zODY4N2gtMS44NTcyNnpNMjQ5LjQxMDM5LDE4NC44NTE2MWMtMC43NzQ4NCwwIC0xLjQ1OTM3LC0wLjExMzc5IC0yLjA1MzU5LC0wLjM0MTM2Yy0wLjU5MTYsLTAuMjI3NTcgLTEuMDkxNTgsLTAuNTY3NDEgLTEuNDk5OTQsLTEuMDE5NTNjLTAuNDA1NzUsLTAuNDU1MTQgLTAuNzEyMDEsLTEuMDIyNTYgLTAuOTE4ODEsLTEuNzAyMjVjLTAuMjA0MTgsLTAuNjgyNzIgLTAuMzA2MjcsLTEuNDczMTYgLTAuMzA2MjcsLTIuMzcxMzF2LTUuNjExOTZjMCwtMC41MzQwNCAwLjEyMDQyLC0wLjkzNzYgMC4zNjEyNCwtMS4yMTA2OWMwLjI0MDgzLC0wLjI3NjEyIDAuNTgyNDQsLTAuNDE0MTggMS4wMjQ4MywtMC40MTQxOGMwLjQ1Mjg2LDAgMC43OTcwOSwwLjEzODA2IDEuMDMyNjgsMC40MTQxOGMwLjIzNTU5LDAuMjczMDkgMC4zNTMzOSwwLjY3NjY1IDAuMzUzMzksMS4yMTA2OXY1LjY0ODM3YzAsMC44OTUxMiAwLjE3MDE1LDEuNTcwMjUgMC41MTA0NSwyLjAyNTRjMC4zNDI5MiwwLjQ1NTE0IDAuODQxNTksMC42ODI3MiAxLjQ5NjAyLDAuNjgyNzJjMC42NDM5NiwwIDEuMTM2MDgsLTAuMjI3NTcgMS40NzYzOCwtMC42ODI3MmMwLjM0MjkyLC0wLjQ1NTE0IDAuNTE0MzgsLTEuMTMwMjggMC41MTQzOCwtMi4wMjU0di01LjY0ODM3YzAsLTAuNTM0MDQgMC4xMTc3OSwtMC45Mzc2IDAuMzUzMzksLTEuMjEwNjljMC4yMzU1OSwtMC4yNzYxMiAwLjU3NDU5LC0wLjQxNDE4IDEuMDE2OTgsLTAuNDE0MThjMC40NDIzOSwwIDAuNzc4NzYsMC4xMzgwNiAxLjAwOTEyLDAuNDE0MThjMC4yMzI5NywwLjI3MzA5IDAuMzQ5NDYsMC42NzY2NSAwLjM0OTQ2LDEuMjEwNjl2NS42MTE5NmMwLDEuMjAxNTggLTAuMTc5MzEsMi4yMDc0NiAtMC41Mzc5NCwzLjAxNzYyYy0wLjM1NjAxLDAuODA3MTIgLTAuODg2MDksMS40MTI0NyAtMS41OTAyNSwxLjgxNjAzYy0wLjcwMTU0LDAuNDAwNTMgLTEuNTY1MzgsMC42MDA3OSAtMi41OTE1MywwLjYwMDc5eiIgZmlsbD0iI2ZmYWIxOSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMi4wNTAwMDAwMDAwMDAwMTozMC40NDk5NjQ5OTk5OTk5OS0tPg=="
@@ -28,6 +30,12 @@
             this.shaders = {};
             this.rn = "";
             this.sn = "";
+            this.shaderuniforms = []
+            this.listuniforms = []
+            this.useableshaderuniforms = {}
+            this.useablelistuniforms = {}
+            this.constsh = ""
+            pen = this
         }
         getInfo() {
             return {
@@ -45,6 +53,26 @@
                                 defaultValue: "shader"
                             }
                         },
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                    },
+                    {
+                        blockType: Scratch.BlockType.COMMAND,
+                        opcode: 'start',
+                        text: '🗲 start constant rendering of shader[NAME]',
+                        arguments: {
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "shader"
+                            }
+                        },
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                    },
+                    {
+                        blockType: Scratch.BlockType.COMMAND,
+                        opcode: 'stop',
+                        text: '🛑 stop constant rendering',
                         extensions: ["colours_pen"],
                         branchIconURI: null,
                     },
@@ -134,8 +162,125 @@
                         branchIconURI: null,
                         blockIconURI: pensvg,
                     },
-                ]
+                    {
+                        blockType: Scratch.BlockType.COMMAND,
+                        opcode: 'getvar',
+                        text: 'get scratch variable[NAME]at time of execution',
+                        arguments: {
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "VARS"
+                            },
+                            
+                        },
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                        blockIconURI: pensvg,
+                    },
+                    {
+                        blockType: Scratch.BlockType.COMMAND,
+                        opcode: 'getlist',
+                        text: 'get scratch list[NAME]at time of execution with max items[MAX]',
+                        arguments: {
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "LISTS"
+                            },
+                            MAX: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 100
+                            }
+                        },
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                        blockIconURI: pensvg,
+                    },
+                ],
+                menus:{
+                    VARS: {
+                        acceptReporters: true,
+                        items: "getVars"
+                    },
+                    LISTS: {
+                        acceptReporters: true,
+                        items: "getLists"
+                    },
+                }
             }
+        }
+        getLists() {
+            const names = [];
+      
+            const globalVars = Object.entries(
+              Scratch.vm.runtime.targets[0].variables
+            );
+            const localVars = Object.entries(Scratch.vm.editingTarget.variables);
+            for (const [varId, varObj] of globalVars.concat(localVars)) {
+              if (varObj.type === "list")
+                names.push({
+                  text: varObj.name,
+                  value: varId,
+                });
+            }
+      
+            return names.length ? names : [""];
+        }
+        start(args) {
+            this.constsh = args.NAME
+            requestAnimationFrame(this.animate)
+        }
+        stop() {
+            this.constsh = ""
+        }
+        getlist(args) {
+            const globalVars = Object.entries(
+                Scratch.vm.runtime.targets[0].variables
+            );
+            const localVars = Object.entries(Scratch.vm.editingTarget.variables);
+            let namer = ""
+            for (const [varId, varObj] of globalVars.concat(localVars)) {
+                if (varObj.type === "list" && varId===args.NAME) {
+                    namer = varObj.name
+                }
+              }
+            let name = this.getname()
+            let lname = this.getname()
+            this.listuniforms.push({"name":name, "value": args.NAME, "max":args.MAX, "size":lname})
+            vars[namer] = name
+            vars[namer+" leg"] = lname
+            lists.listsmsize[namer] = args.MAX
+        }
+        getvar(args) {
+            const globalVars = Object.entries(
+                Scratch.vm.runtime.targets[0].variables
+            );
+            const localVars = Object.entries(Scratch.vm.editingTarget.variables);
+            let namer = ""
+            for (const [varId, varObj] of globalVars.concat(localVars)) {
+                if (varObj.type != "list" && varId===args.NAME) {
+                    namer = varObj.name
+                }
+              }
+            let name = this.getname()
+            this.shaderuniforms.push({"name":name, "value": args.NAME})
+            vars[namer] = name
+        }
+        getVars() {
+            const names = [];
+      
+            const globalVars = Object.entries(
+              Scratch.vm.runtime.targets[0].variables
+            );
+            const localVars = Object.entries(Scratch.vm.editingTarget.variables);
+            for (const [varId, varObj] of globalVars.concat(localVars)) {
+              if (varObj.type != "list")
+                names.push({
+                  text: varObj.name,
+                  value: varId,
+                });
+            }
+      
+            return names.length ? names : [""];
         }
         shader(args) {
             if (this.rn == args.NAME) {
@@ -143,6 +288,30 @@
                 return true
             }
             return false
+        }
+        _getVar(listId) {
+            for (const t of Scratch.vm.runtime.targets) {
+              for (const varId in t.variables) {
+                const varObj = t.variables[varId];
+                if (varId === listId) {
+                  return varObj.value;
+                }
+              }
+            }
+        }
+        getname() {
+            const letters = ['a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+            let str = ""
+            for (let i =0; i<5; i++) {
+                str+=(letters[Math.floor(Math.random()*26)])
+            }
+            for (const [key, value] of Object.entries(vars)) {
+                if (value === "ur"+str) {
+                    str = this.getname()
+                    break
+                }
+            }
+            return str
         }
         render(args) {
             let program = this.shaders[args.NAME]
@@ -163,11 +332,79 @@
             var positionAttributeLocation = gl.getAttribLocation(program, "position");
             gl.enableVertexAttribArray(positionAttributeLocation);
             gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-
             var resolutionLocation = gl.getUniformLocation(program, "resolution");
             gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            for (let i = 0; i < this.useableshaderuniforms[args.NAME].length; i++) {
+                var Location = gl.getUniformLocation(program, this.useableshaderuniforms[args.NAME][i]["name"]);
+                gl.uniform1f(Location, parseFloat(this._getVar(this.useableshaderuniforms[args.NAME][i]["value"])));
+            }
+            for (let i = 0; i < this.useablelistuniforms[args.NAME].length; i++) {
+                var Location = gl.getUniformLocation(program, this.useablelistuniforms[args.NAME][i]["name"]);
+                let vu = this._getVar(this.useablelistuniforms[args.NAME][i]["value"])
+                let size = vu.length
+                for (let ii = 0; ii< this.useablelistuniforms[args.NAME][i]["max"]; ii++) {
+                    if (ii < vu.length) {
+                        vu[ii] = parseFloat(vu[ii])
+                    }else{
+                        vu.push(0.0)
+                    }
+                    
+                }
+                gl.uniform1fv(Location, new Float32Array(vu));
+                var Location = gl.getUniformLocation(program, this.useablelistuniforms[args.NAME][i]["size"]);
+                gl.uniform1f(Location, parseFloat(size.toString()));
+            }
+            
             // Draw
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+        animate() {
+            if (pen.constsh === "") {
+                return
+            }
+            let program = pen.shaders[pen.constsh]
+            gl.useProgram(program);
+
+            // Create buffer for position data
+            var positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            var positions = [
+            -1.0,  1.0,
+            1.0,  1.0,
+            -1.0, -1.0,
+            1.0, -1.0,
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+            // Specify how to pull the data out
+            var positionAttributeLocation = gl.getAttribLocation(program, "position");
+            gl.enableVertexAttribArray(positionAttributeLocation);
+            gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+            var resolutionLocation = gl.getUniformLocation(program, "resolution");
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            for (let i = 0; i < pen.useableshaderuniforms[pen.constsh].length; i++) {
+                var Location = gl.getUniformLocation(program, pen.useableshaderuniforms[pen.constsh][i]["name"]);
+                gl.uniform1f(Location, parseFloat(pen._getVar(pen.useableshaderuniforms[pen.constsh][i]["value"])));
+            }
+            for (let i = 0; i < pen.useablelistuniforms[pen.constsh].length; i++) {
+                var Location = gl.getUniformLocation(program, pen.useablelistuniforms[pen.constsh][i]["name"]);
+                let vu = pen._getVar(pen.useablelistuniforms[pen.constsh][i]["value"])
+                let size = vu.length
+                for (let ii = 0; ii< pen.useablelistuniforms[pen.constsh][i]["max"]; ii++) {
+                    if (ii < vu.length) {
+                        vu[ii] = parseFloat(vu[ii])
+                    }else{
+                        vu.push(0.0)
+                    }
+                    
+                }
+                gl.uniform1fv(Location, new Float32Array(vu));
+                var Location = gl.getUniformLocation(program, pen.useablelistuniforms[pen.constsh][i]["size"]);
+                gl.uniform1f(Location, parseFloat(size.toString()));
+            }
+            // Draw
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(pen.animate)
         }
         getx() {
             return "pos.x"
@@ -179,7 +416,7 @@
             script.push(("   ".repeat(indentlayer))+"gl_FragColor ="+args.COLOR+";\n")
         }
         color(args) {
-            return "vec4("+args.R+", "+args.G+", "+args.B+", 1.0)";
+            return "vec4(float("+args.R+"), float("+args.G+"), float("+args.B+"), 1.0)";
         }
         end(args, util) {
             if (util.stackFrame.done != "yes") {
@@ -190,6 +427,8 @@
             }
         }
         compileShader(args) {
+            this.shaderuniforms = []
+            this.listuniforms = []
             GPUformat = 1
             const name = args.NAME
             ctype = "float"
@@ -203,7 +442,18 @@
                         for (let i = 0; i < script.length; i++) {
                             code += script[i];
                         }
-                        let txt = "precision mediump float;\nuniform vec2 resolution;\nvarying vec2 v_uv;\nvoid main() {\n   vec2 pos = v_uv * resolution;\n" + code + '}'
+                        let uni = ""
+                        console.log(this.shaderuniforms)
+                        for (let i =0; i <this.shaderuniforms.length; i++) {
+                            uni += "uniform float "+this.shaderuniforms[i]["name"]+";\n"
+                        }
+                        for (let i =0; i <this.listuniforms.length; i++) {
+                            uni += "uniform float "+this.listuniforms[i]["name"]+"["+this.listuniforms[i]["max"].toString()+"];\n"
+                            uni+="uniform float "+this.listuniforms[i]["size"]+";\n"
+                        }
+                        this.useableshaderuniforms[name] = this.shaderuniforms
+                        this.useablelistuniforms[name] = this.listuniforms
+                        let txt = "precision mediump float;\nuniform vec2 resolution;\n"+uni+"varying vec2 v_uv;\nvoid main() {\n   vec2 pos = v_uv * resolution;\n" + code + '}'
                         console.log(txt)
                         var vertexShaderSource = `
                         attribute vec2 position;
@@ -223,6 +473,8 @@
                         var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
                         gl.shaderSource(fragmentShader, txt);
                         gl.compileShader(fragmentShader);
+                        var compilationLog = gl.getShaderInfoLog(fragmentShader);
+                        console.log('Shader compiler log: ' + compilationLog);
                         var program = gl.createProgram();
                         gl.attachShader(program, vertexShader);
                         gl.attachShader(program, fragmentShader);
@@ -237,7 +489,9 @@
     class GPUlists {
         constructor() {
             this.list = []
+            this.listsmsize = {}
             this.maxsizes = {}
+            lists = this
         }
         getInfo() {
             return {
@@ -352,21 +606,48 @@
         setinlist(args) {
             if (GPUformat === 0) {
                 script.push(("   ".repeat(indentlayer))+vars[args.NAME]+"[i32("+args.I+")-1] = "+args.THIS+";\n")
-        
+            }else{
+                let line=("   ".repeat(indentlayer))+"for (int QQ=0; QQ<"+this.listsmsize[args.NAME]+"; QQ++) {\n"
+                line += ("   ".repeat(indentlayer+1))+"if (QQ=="+args.I+") {\n"
+                line += ("   ".repeat(indentlayer+2))+vars[args.NAME]+"[QQ] = float("+args.I+");\n"
+                line += ("   ".repeat(indentlayer+2))+"break;\n"
+                line+=("   ".repeat(indentlayer+1))+"}\n"
+                line+=("   ".repeat(indentlayer))+"}\n"
+                script.push(line)
             }
         }
         addtolist(args) {
             console.log(vars)
             console.log(args.NAME)
-            let line= ("   ".repeat(indentlayer))+vars[args.NAME]+"["+vars[args.NAME+" leg"]+"] = "+args.I+";\n"
-            line += ("   ".repeat(indentlayer))+vars[args.NAME+" leg"]+" += 1;\n"
+            let line = ""
+            if (GPUformat === 1) {
+                line=("   ".repeat(indentlayer))+"for (int QQ=0; QQ<"+this.listsmsize[args.NAME]+"; QQ++) {\n"
+                line += ("   ".repeat(indentlayer+1))+"if (QQ=="+vars[args.NAME+" leg"]+") {\n"
+                line += ("   ".repeat(indentlayer+2))+vars[args.NAME]+"[QQ] = float("+args.I+");\n"
+                line += ("   ".repeat(indentlayer+2))+vars[args.NAME+" leg"]+"++;\n"
+                line += ("   ".repeat(indentlayer+2))+"break;\n"
+                line+=("   ".repeat(indentlayer+1))+"}\n"
+                line+=("   ".repeat(indentlayer))+"}\n"
+            } else {
+                line += ("   ".repeat(indentlayer+1))+vars[args.NAME]+"["+vars[args.NAME+" leg"]+"] = "+args.I+";\n"
+                line += ("   ".repeat(indentlayer+1))+vars[args.NAME+" leg"]+" += 1;\n"
+            }
             script.push(line)
         }
         getitem(args) {
             if (GPUformat === 0) {
                 return vars[args.NAME]+"[i32("+args.I+")-1]"
             } else {
-                return vars[args.NAME]+"[int("+args.I+")-1]"
+                let name = this.getname()
+                let line = ("   ".repeat(indentlayer))+"float "+name+";\n"
+                line+=("   ".repeat(indentlayer))+"for (int QQ=0; QQ<"+this.listsmsize[args.NAME]+"; QQ++) {\n"
+                line += ("   ".repeat(indentlayer+1))+"if (QQ==int("+args.I+")-1) {\n"
+                line += ("   ".repeat(indentlayer+2))+name+" = "+vars[args.NAME]+"[QQ];\n"
+                line += ("   ".repeat(indentlayer+2))+"break;\n"
+                line+=("   ".repeat(indentlayer+1))+"}\n"
+                line+=("   ".repeat(indentlayer))+"}\n"
+                script.push(line)
+                return name
             }
         }
         element(args) {
@@ -395,30 +676,32 @@
                 let name = this.getname()
                 let namel = this.getname()
                 let line = ""
+                this.listsmsize[args.NAME] = args.MAX
                 if (GPUformat === 0) {
                     line = ("   ".repeat(indentlayer))+"var "+namel+": u32 = "+(this.list.length).toString()+";\n"
                     line += ("   ".repeat(indentlayer))+"var "+name+" : array<"+ctype+", "+args.MAX+"> = array<"+ctype+", "+args.MAX+">("
-                } else {
-                    line = ("   ".repeat(indentlayer))+"int "+namel+" = "+(this.list.length).toString()+";\n"
-                    line += ("   ".repeat(indentlayer))+"float "+name+"["+args.MAX+"] = float[]("
-                }
-                
-                for (let i = 0; i < args.MAX; i++) {
-                    if (i < this.list.length) {
-                        line += this.list[i];
-                    } else {
-                        line += "0";
-                        if (GPUformat === 1) {
-                            line += ".0"
+                    for (let i = 0; i < args.MAX; i++) {
+                        if (i < this.list.length) {
+                            line += this.list[i];
+                        } else {
+                            line += "0";
+                        }
+                        
+                        if (i < args.MAX - 1) {
+                            line += ", ";
                         }
                     }
-                    
-                    if (i < args.MAX - 1) {
-                        line += ", ";
+                } else {
+                    line = ("   ".repeat(indentlayer))+"int "+namel+" = "+(this.list.length).toString()+";\n"
+                    line += ("   ".repeat(indentlayer))+"float "+name+"["+args.MAX+"];\n"
+                    for (let i = 0; i < args.MAX; i++) {
+                        if (i < this.list.length) {
+                            line += ("   ".repeat(indentlayer))+name+"["+i.toString()+"] = " + this.list[i] + ";\n"
+                        } else {
+                            break
+                        }
                     }
                 }
-                
-                line+=");\n"
                 vars[args.NAME] = name
                 vars[args.NAME+" leg"] = namel
                 
@@ -609,7 +892,7 @@
             }
         }
         inde() {
-            return ctype+"(i".repeat(loops)+"+1)"
+            return ctype+"("+"i".repeat(loops)+"+1)"
         }
         repeat(args, util) {
             if (util.stackFrame.done != "yes") {
@@ -638,6 +921,7 @@
                 if (GPUformat === 0) {
                     script.push("   ".repeat(indentlayer)+"while (!("+args.COND+")) {\n")
                 } else {
+                    loops++
                     script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 1000000; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if("+args.COND+") { break; }\n")
                 }
                 indentlayer ++
@@ -648,6 +932,7 @@
                     script.push(("   ".repeat(indentlayer))+"};\n")
                 } else {
                     script.push(("   ".repeat(indentlayer))+"}\n")
+                    loops--
                 }
             }
         }
@@ -929,7 +1214,7 @@
             if (GPUformat === 0) {
                 return "("+args.A+"%"+args.B+")"
             } else {
-                return "mod("+args.A+","+args.B+")"
+                return "mod(float("+args.A+"), float("+args.B+"))"
             }
         }
         and(args) {
@@ -942,25 +1227,25 @@
             return "!("+args.A+")"
         }
         greater(args) {
-            return "("+args.A+'>'+args.B+")"
+            return "("+ctype+'('+args.A+') > '+ctype+'('+args.B+"))"
         }
         less(args) {
-            return "("+args.A+'<'+args.B+")"
+            return "("+ctype+'('+args.A+') < '+ctype+'('+args.B+"))"
         }
         equal(args) {
-            return "("+args.A+'=='+args.B+")"
+            return "("+ctype+'('+args.A+') == '+ctype+'('+args.B+"))"
         }
         plus(args) {
-            return "("+args.A+'+'+args.B+")"
+            return "("+ctype+'('+args.A+') + '+ctype+'('+args.B+"))"
         }
         minus(args) {
-            return "("+args.A+'-'+args.B+")"
+            return "("+ctype+'('+args.A+') - '+ctype+'('+args.B+"))"
         }
         times(args) {
-            return "("+args.A+'*'+args.B+")"
+            return "("+ctype+'('+args.A+') * '+ctype+'('+args.B+"))"
         }
         divide(args) {
-            return "("+args.A+'/'+args.B+")"
+            return "("+ctype+'('+args.A+') / '+ctype+'('+args.B+"))"
         }
         sqrt(args) {
             if (args.OF == 'abs') {
