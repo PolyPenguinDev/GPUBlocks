@@ -13,6 +13,7 @@
     let vars = {}
     let GPUformat = 0
     const canvas = Scratch.renderer.canvas;
+    var gl = canvas.getContext('webgl');
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('GPUBlocks must run unsandboxed');
     }
@@ -23,6 +24,11 @@
     const pensvg = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2NC4xIiBoZWlnaHQ9IjY0LjI0MDgiIHZpZXdCb3g9IjAsMCw2NC4xLDY0LjI0MDgiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMDcuOTUsLTE0OS41NSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIxMi41ODE4MSwxNTguOTg0NzJjMCwtMi4yMDkxNCAxLjc5MDg2LC00IDQsLTRoNDYuODM2MzljMi4yMDkxNCwwIDQsMS43OTA4NiA0LDR2NDEuNTU2MDhjMCwyLjIwOTE0IC0xLjc5MDg2LDQgLTQsNGgtNS4yNTY5N2MtMiwwIC0zLDEgLTQsMmwtNCw0Yy0xLDEgLTIsMiAtNCwyaC0xMmMtMiwwIC0zLC0xIC00LC0ybC00LC00Yy0xLC0xIC0yLC0yIC00LC0yaC01LjU3OTQyYy0yLjIwOTE0LDAgLTQsLTEuNzkwODYgLTQsLTR6IiBmaWxsPSIjMGI4ZTY5IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzBiOGU2OSIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTIxMi41ODE4MSwxNTUuMjIxOTdjMCwtMi4yMDkxNCAxLjc5MDg2LC00IDQsLTRoNDYuODM2MzljMi4yMDkxNCwwIDQsMS43OTA4NiA0LDR2NDEuNTU2MDhjMCwyLjIwOTE0IC0xLjc5MDg2LDQgLTQsNGgtNS4yNTY5N2MtMiwwIC0zLDEgLTQsMmwtNCw0Yy0xLDEgLTIsMiAtNCwyaC0xMmMtMiwwIC0zLC0xIC00LC0ybC00LC00Yy0xLC0xIC0yLC0yIC00LC0yaC01LjU3OTQyYy0yLjIwOTE0LDAgLTQsLTEuNzkwODYgLTQsLTR6IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzNjZjFiZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTIwNy45NSwyMTMuNjV2LTY0LjFoNjQuMXY2NC4xeiIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjI0LjE0MTk1LDE2NS4zNzA4N2MwLC0xLjM3NjU3IDEuMDA3OSwtMi40OTI1IDIuMjUxMjEsLTIuNDkyNWgyNi4zNTk2N2MxLjI0MzMxLDAgMi4yNTEyMiwxLjExNTkzIDIuMjUxMjIsMi40OTI1djI1Ljg5NDY0YzAsMS4zNzY1NyAtMS4wMDc5LDIuNDkyNDkgLTIuMjUxMjIsMi40OTI0OWgtMjYuMzU5NjdjLTEuMjQzMzEsMCAtMi4yNTEyMSwtMS4xMTU5MyAtMi4yNTEyMSwtMi40OTI0OXoiIGZpbGw9IiMwNjQ4MzUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDk2YTRmIiBzdHJva2Utd2lkdGg9IjYuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjIwLjE5OTksMTcxLjg0NTI5aDExLjMxNjciIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDk2YTRmIiBzdHJva2Utd2lkdGg9IjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMzEuNTE2NiwxODQuNzkxMDloLTExLjMxNjciIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDk2YTRmIiBzdHJva2Utd2lkdGg9IjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNDcuNzkzMzEsMTcxLjg0NTI5aDExLjMxNjciIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDk2YTRmIiBzdHJva2Utd2lkdGg9IjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNDcuNzkzMzEsMTg0Ljc5MTA5aDExLjMxNjciIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDk2YTRmIiBzdHJva2Utd2lkdGg9IjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMzMuMTgyMDYsMTk3Ljc3MzI0di0xMS4zMTY3IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzA5NmE0ZiIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjEyNzg3LDE4Ni40NTY1NHYxMS4zMTY3IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzA5NmE0ZiIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE1OC44NjMxM3YxMS4zMTY3IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzA5NmE0ZiIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjEyNzg3LDE1OC44NjMxM3YxMS4zMTY3IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzA5NmE0ZiIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjI0LjE0MTk1LDE2NS4zNzA4N2MwLC0xLjM3NjU3IDEuMDA3OSwtMi40OTI1IDIuMjUxMjEsLTIuNDkyNWgyNi4zNTk2N2MxLjI0MzMxLDAgMi4yNTEyMiwxLjExNTkzIDIuMjUxMjIsMi40OTI1djI1Ljg5NDY0YzAsMS4zNzY1NyAtMS4wMDc5LDIuNDkyNDkgLTIuMjUxMjIsMi40OTI0OWgtMjYuMzU5NjdjLTEuMjQzMzEsMCAtMi4yNTEyMSwtMS4xMTU5MyAtMi4yNTEyMSwtMi40OTI0OXoiIGZpbGw9IiMwZmJkOGMiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMGZiZDhjIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjIwLjE5OTksMTcxLjg0NTI5aDExLjMxNjciIGZpbGw9IiMwZmJkOGMiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMGZiZDhjIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMjAuMTk5OSwxODQuNzkxMDloMTEuMzE2NyIgZmlsbD0iIzBmYmQ4YyIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiMwZmJkOGMiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTI1OS4xMTAwMSwxNzEuODQ1MjloLTExLjMxNjciIGZpbGw9IiMwZmJkOGMiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMGZiZDhjIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNTkuMTEwMDEsMTg0Ljc5MTA5aC0xMS4zMTY3IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzBmYmQ4YyIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE4Ni40NTY1NHYxMS4zMTY3IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzBmYmQ4YyIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjEyNzg3LDE4Ni40NTY1NHYxMS4zMTY3IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzBmYmQ4YyIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE1OC44NjMxM3YxMS4zMTY3IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzBmYmQ4YyIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjEyNzg3LDE1OC44NjMxM3YxMS4zMTY3IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzBmYmQ4YyIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzA2NDgzNSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMjIuNzIyODcsMTk1LjgwMTM2bC01Ljk2NDQ5LDIuMDAwNzZsMi44NDk3MywtNS41OTIwOGMxLjk0NjQ2LC0zLjgxNjgzIDQuNDk4MzcsLTcuMDk1MTggNy41OTk4MywtOS43NjM4NmwyOC44NTI3MSwtMjQuODI4MzJjMS4yMzU4MywtMS4wNjIzNCAzLjY0OTM2LC0wLjI5NDQ5IDUuMzk0MTYsMS43MTgxNmMxLjc0MjI4LDIuMDA5NzMgMi4xNTcsNC41MDE1IDAuOTIxMTcsNS41NjM4NGwtMjguODUyODEsMjQuODI5NjdjLTMuMTAxNTYsMi42NzAwNCAtNi43MjkzMiw0LjcxMDIxIC0xMC44MDAzMiw2LjA3MTgiIGZpbGw9IiMwNjQ4MzUiLz48cGF0aCBkPSJNMjM1Ljg2NzQ0LDE2Ny43NzUyOWMwLDAgMy4zNDEyNCwzLjI4MzQzIDYuMDc3MzYsLTEuNjcyMTdjNS45MjA0OCwtMTAuNzI0NDUgMTEuNzQzMzgsLTcuMDQzMyAxMS43NDMzOCwtNy4wNDMzIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTI2Mi45NjM1MywxNjMuNDU0NzNjLTAuMDQ2MDksMC42MzA0OCAtMC4yNzc1NSwxLjE3NDg0IC0wLjcwNDE0LDEuNTQyMDJsLTEzLjYzNzQyLDExLjczNDYzYzAuNDEyODcsLTAuMzY2ODIgMC42MjQ4LC0wLjg2ODgxIDAuNjY5OCwtMS40ODQzYzAuMDg3MDEsLTEuMTkwMTMgLTAuNDk0OTcsLTIuNzIzNTIgLTEuNjI5MDYsLTQuMDQ1MzdjLTEuNzE5NDYsLTEuOTg0NzkgLTQuMTA2MTIsLTIuNzY0MzcgLTUuMzUxMDIsLTEuNzQ2NDlsMTMuNjM3NTIsLTExLjczNTk5YzEuMjMyOTEsLTEuMDU5ODIgMy42NDkzNiwtMC4yOTQ0OSA1LjM5ODk1LDEuNzA4OTNjMS4xMzI4MiwxLjMyMDM4IDEuNzAzNjUsMi44Mzc4OSAxLjYxNjc0LDQuMDI2NjdNMjI1LjIwNDY0LDE5NC44NDkyNmMtMC44MTAzMiwwLjM1NDE5IC0xLjYzMjI1LDAuNjYxIC0yLjQ4NDY5LDAuOTU0NjJsLTUuOTY1NjQsMS45OTc5NGwyLjg1MzYyLC01LjU4OTA2YzAuNDExNDUsLTAuNzk2NzkgMC44Mzk3NywtMS41NjIyMyAxLjMwOTIxLC0yLjMwOTYxYzAuOTIxMzYsMC4zMTc4OCAxLjkwOTU0LDAuOTk1MjIgMi43NDI4NywxLjk1NTU3YzAuODMzMjMsMC45NjE3MSAxLjM2MDA0LDIuMDMyNDQgMS41NDMyNywyLjk5MDQ0IiBmaWxsPSIjMDY0ODM1Ii8+PHBhdGggZD0iTTI2My4wNzc0LDE2My4zNTc2NWMtMC4wNDYxOSwwLjYzMTgzIC0wLjI3NzY1LDEuMTc2MiAtMC43MDU2LDEuNTQzMjlsLTI4Ljg0MjEsMjQuODMzMTljLTMuMTEwNSwyLjY2MTE3IC02Ljc0MDg4LDQuNjk5NzggLTEwLjgwOTY0LDYuMDY4MzlsLTUuOTY1NTQsMS45OTY1N2wxLjU1Njg3LC0zLjA1Njc3bDIuNzAxNzMsLTAuOTA4NjNjNC4wNjc1LC0xLjM3MDA3IDcuNjk2NDIsLTMuNDA3NDIgMTAuODA2OTIsLTYuMDY4NThsMjguODQzNDcsLTI0LjgzMzA5YzAuNDI2NjksLTAuMzY4NTUgMC42NTgxNCwtMC45MTI5MSAwLjcwNDI0LC0xLjU0MzM5YzAuMDY0MzEsLTAuODc5NjYgLTAuMjI4MjksLTEuOTMzMjggLTAuODUwODksLTIuOTY3MjFjMC4zMjMzMSwwLjI1OTEgMC42NDMzMiwwLjU2MzE1IDAuOTQyNDYsMC45MDk0NmMxLjEzMjcyLDEuMzIxNzUgMS43MDM1NSwyLjgzOTI1IDEuNjE2NjQsNC4wMjgwMiIgZmlsbD0iIzA2NDgzNSIgb3BhY2l0eT0iMC4xNSIvPjxwYXRoIGQ9Ik0yMzguMDk0ODMsMTY3LjExOTQ3Yy0wLjA0OTc4LDAuNjgwODUgLTAuNjQwMjMsMS4xOTIxMyAtMS4zMjEwOCwxLjE0MjM2Yy0wLjY4MDg1LC0wLjA0OTc4IC0xLjE5MjAzLC0wLjY0MTU5IC0xLjE0MjM2LC0xLjMyMTA4YzAuMDQ5NzgsLTAuNjgwODUgMC42NDQxMiwtMS4xODkxMSAxLjMyMzYsLTEuMTM5NDRjMC42ODA4NSwwLjA0OTc4IDEuMTkwNzcsMC42NDAxMyAxLjE0MDk5LDEuMzIwOTh6IiBmaWxsPSIjMDY0ODM1Ii8+PC9nPjxwYXRoIGQ9Ik0yMjYuNDkyODUsMTg5LjI1ODcxYy0xLjc3MDU2LDAgLTMuMjc1OTEsLTAuMzgwMzkgLTQuNTE2MDUsLTEuMTQxMTdjLTEuMjM2MzMsLTAuNzY1MiAtMi4xNzY5NCwtMS44MzU2MSAtMi44MjE4MiwtMy4yMTEyYy0wLjY0NDg4LC0xLjM3NTYgLTAuOTY3MzEsLTIuOTgxMiAtMC45NjczMSwtNC44MTY3OWMwLC0xLjQyODY3IDAuMTkyNjksLTIuNzE1ODEgMC41NzgxLC0zLjg2MTRjMC4zODkyMiwtMS4xNDU1OCAwLjk1MDE1LC0yLjEyOTc0IDEuNjgyNzksLTIuOTUyNDRjMC43MzI2NCwtMC44MjcxMiAxLjYyOTM3LC0xLjQ1NTIyIDIuNjkwMTcsLTEuODg0MjVjMS4wNjQ2MiwtMC40MzM0NiAyLjI3MDQzLC0wLjY1MDIgMy42MTc0MiwtMC42NTAyYzAuNzMyNjQsMCAxLjQ4MDU1LDAuMDgxODQgMi4yNDM3MiwwLjI0NTQ4YzAuNzYzMTcsMC4xNTkyMyAxLjUxMTA4LDAuNDU3NzkgMi4yNDM3MiwwLjg5NTY5YzAuMzc3NzcsMC4yMDM0NyAwLjYzNTM0LDAuNDg4NzYgMC43NzI3MiwwLjg1NTg4YzAuMTQxMTksMC4zNjcxMiAwLjE4Njk4LDAuNzQ5NzEgMC4xMzczNywxLjE0NzhjLTAuMDQ5NjEsMC4zOTgwOSAtMC4xNzM2MywwLjc2Mjk5IC0wLjM3MjA0LDEuMDk0NzJjLTAuMTk4NDIsMC4zMzE3MyAtMC40Njc0NCwwLjU1Mjg5IC0wLjgwNzA1LDAuNjYzNDZjLTAuMzM1OCwwLjExMDU4IC0wLjcxNTQ3LDAuMDU1MjkgLTEuMTM5MDIsLTAuMTY1ODdjLTAuNDM4ODEsLTAuMjM4ODUgLTAuOTE1ODEsLTAuNDIyNCAtMS40MzA5NSwtMC41NTA2OGMtMC41MTEzMiwtMC4xMjgyOCAtMS4wNTMxOCwtMC4xOTI0IC0xLjYyNTU1LC0wLjE5MjRjLTAuOTgwNjcsMCAtMS43OTcyNSwwLjIwNTY3IC0yLjQ0OTc3LDAuNjE3MDJjLTAuNjUyNTEsMC40MDY5MyAtMS4xNDA5MywxLjAxMDY5IC0xLjQ2NTI5LDEuODExMjhjLTAuMzIwNTQsMC43OTYxNiAtMC40ODA4LDEuNzcxNDcgLTAuNDgwOCwyLjkyNTkxYzAsMS43MzM4NyAwLjM2NjMyLDMuMDQzMTMgMS4wOTg5NywzLjkyNzc1YzAuNzMyNjQsMC44ODAxOSAxLjgxNjM1LDEuMzIwMzEgMy4yNTExLDEuMzIwMzFjMC40NDI2MywwIDAuOTIzNDMsLTAuMDUwODYgMS40NDIzOSwtMC4xNTI1OWMwLjI4ODU5LC0wLjA1NjU3IDAuNTc4MzUsLTAuMTI2MTQgMC44NjkzLC0wLjIwODdjMC4yMzIyNSwtMC4wNjU5IC0wLjA0NTA3LC0yLjgyMzM1IC0wLjA0NTA3LC0yLjgyMzM1aC0xLjUzOTY5Yy0wLjQ5NjA2LDAgLTAuODgxNDYsLTAuMTQzNzQgLTEuMTU2MiwtMC40MzEyNWMtMC4yNzA5MywtMC4yOTE5MiAtMC40MDYzOCwtMC43MDEwNyAtMC40MDYzOCwtMS4yMjc0MmMwLC0wLjUyNjM1IDAuMTM1NDYsLTAuOTI4ODUgMC40MDYzOCwtMS4yMDc1MWMwLjI3NDczLC0wLjI3ODY2IDAuNjYwMTQsLTAuNDE3OTggMS4xNTYyLC0wLjQxNzk4aDMuMjUxMWMwLjUxNTE0LDAgMC45MDgxNywwLjE1NzAyIDEuMTc5MSwwLjQ3MTA2YzAuMjcwOTMsMC4zMTQwNSAwLjQwNjM4LDAuNzY3NDEgMC40MDYzOCwxLjM2MDEydjUuNjMyODZjMCwwLjUwODY1IC0wLjA5MTU3LDAuOTQyMTMgLTAuMjc0NzMsMS4zMDAzOWMtMC4xODMxNiwwLjM1Mzg0IC0wLjQ3MzE2LDAuNjA4MTkgLTAuODcwMDIsMC43NjI5OWMtMC42ODY4NCwwLjI2OTgxIC0xLjQzNDc2LDAuNDc5OTEgLTIuMjQzNzIsMC42MzAzYy0wLjgwNTE1LDAuMTU0ODEgLTEuNjEwMjksMC4yMzIyMSAtMi40MTU0MiwwLjIzMjIxek0yMzYuMTI5NywxODkuMjEyMjdjLTAuNjQ0ODgsMCAtMS4xNDI4NCwtMC4yMDc4OCAtMS40OTM5LC0wLjYyMzY3Yy0wLjM1MTA2LC0wLjQyMDIgLTAuNTI2NTgsLTEuMDA0MDYgLTAuNTI2NTgsLTEuNzUxNTV2LTEzLjQ0ODU2YzAsLTAuNzY1MiAwLjE3OTM0LC0xLjM1MTI3IDAuNTM4MDQsLTEuNzU4MmMwLjM1ODY4LC0wLjQwNjkzIDAuODYwNDcsLTAuNjEwMzkgMS41MDUzNSwtMC42MTAzOWg1LjQwODk2YzEuNzU1MjksMCAzLjExMTgxLDAuNTIxOTMgNC4wNjk2LDEuNTY1NzhjMC45NjE1OSwxLjA0Mzg3IDEuNDQyMzksMi40ODM1OSAxLjQ0MjM5LDQuMzE5MTljMCwxLjgzNTYxIC0wLjQ4MDgsMy4yNzUzNCAtMS40NDIzOSw0LjMxOTE5Yy0wLjk1Nzc3LDEuMDQzODcgLTIuMzE0MywxLjU2NTc4IC00LjA2OTYsMS41NjU3OGgtMy40MTEzNnY0LjA0NzE3YzAsMC43NDc1MSAtMC4xNjc5LDEuMzMxMzUgLTAuNTAzNywxLjc1MTU1Yy0wLjMzNTgsMC40MTU3NyAtMC44NDEzOSwwLjYyMzY3IC0xLjUxNjc5LDAuNjIzNjd6TTIzOC4xNTAxOSwxNzkuMTkzODZoMi43MDczNGMwLjc1OTM1LDAgMS4zNDMxOCwtMC4xOTAxOSAxLjc1MTQ3LC0wLjU3MDU4YzAuNDEyMTEsLTAuMzgwMzkgMC42MTgxNywtMC45NTMxOCAwLjYxODE3LC0xLjcxODM5YzAsLTAuNzgyODkgLTAuMjA2MDUsLTEuMzYwMTIgLTAuNjE4MTcsLTEuNzMxNjZjLTAuNDA4MjksLTAuMzc1OTYgLTAuOTkyMTIsLTAuNTYzOTQgLTEuNzUxNDcsLTAuNTYzOTRoLTIuNzA3MzR6TTI1NC45MzIzNywxODkuMjU4NzFjLTEuMTI5NDksMCAtMi4xMjczNCwtMC4xNjU4NyAtMi45OTM1NCwtMC40OTc2Yy0wLjg2MjM4LC0wLjMzMTczIC0xLjU5MTIxLC0wLjgyNzEyIC0yLjE4NjQ4LC0xLjQ4NjE4Yy0wLjU5MTQ3LC0wLjY2MzQ2IC0xLjAzNzksLTEuNDkwNTkgLTEuMzM5MzYsLTIuNDgxMzhjLTAuMjk3NjMsLTAuOTk1MjEgLTAuNDQ2NDUsLTIuMTQ3NDQgLTAuNDQ2NDUsLTMuNDU2Njh2LTguMTgwNmMwLC0wLjc3ODQ3IDAuMTc1NTQsLTEuMzY2NzUgMC41MjY1OCwtMS43NjQ4M2MwLjM1MTA2LC0wLjQwMjUgMC44NDkwMywtMC42MDM3NSAxLjQ5MzksLTAuNjAzNzVjMC42NjAxNCwwIDEuMTYxOTMsMC4yMDEyNSAxLjUwNTM1LDAuNjAzNzVjMC4zNDM0MiwwLjM5ODA5IDAuNTE1MTQsMC45ODYzNiAwLjUxNTE0LDEuNzY0ODN2OC4yMzM2OGMwLDEuMzA0ODIgMC4yNDgwMywyLjI4ODk3IDAuNzQ0MDksMi45NTI0NGMwLjQ5OTg4LDAuNjYzNDYgMS4yMjY3OSwwLjk5NTIxIDIuMTgwNzYsMC45OTUyMWMwLjkzODcxLDAgMS42NTYwNywtMC4zMzE3MyAyLjE1MjEzLC0wLjk5NTIxYzAuNDk5ODgsLTAuNjYzNDYgMC43NDk4MiwtMS42NDc2MiAwLjc0OTgyLC0yLjk1MjQ0di04LjIzMzY4YzAsLTAuNzc4NDcgMC4xNzE3LC0xLjM2Njc1IDAuNTE1MTQsLTEuNzY0ODNjMC4zNDM0MiwtMC40MDI1IDAuODM3NTgsLTAuNjAzNzUgMS40ODI0NiwtMC42MDM3NWMwLjY0NDg4LDAgMS4xMzUyMSwwLjIwMTI1IDEuNDcxLDAuNjAzNzVjMC4zMzk2LDAuMzk4MDkgMC41MDk0MSwwLjk4NjM2IDAuNTA5NDEsMS43NjQ4M3Y4LjE4MDZjMCwxLjc1MTU1IC0wLjI2MTM4LDMuMjE3ODMgLTAuNzg0MTYsNC4zOTg4MWMtMC41MTg5NiwxLjE3NjU1IC0xLjI5MTY2LDIuMDU4OTcgLTIuMzE4MTIsMi42NDcyNGMtMS4wMjI2NCwwLjU4Mzg2IC0yLjI4MTg3LDAuODc1NzggLTMuNzc3NywwLjg3NTc4eiIgZmlsbD0iIzBmYmQ4YyIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiMwNjQ4MzUiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMjYuNDkyODUsMTg5LjI1ODcxYy0xLjc3MDU2LDAgLTMuMjc1OTEsLTAuMzgwMzggLTQuNTE2MDUsLTEuMTQxMTdjLTEuMjM2MzIsLTAuNzY1MiAtMi4xNzY5NCwtMS44MzU2MSAtMi44MjE4MiwtMy4yMTEyMWMtMC42NDQ4OCwtMS4zNzU2IC0wLjk2NzMxLC0yLjk4MTIxIC0wLjk2NzMxLC00LjgxNjhjMCwtMS40Mjg2NyAwLjE5MjcsLTIuNzE1ODEgMC41NzgxLC0zLjg2MTM5YzAuMzg5MjMsLTEuMTQ1NTkgMC45NTAxNCwtMi4xMjk3NSAxLjY4Mjc5LC0yLjk1MjQ1YzAuNzMyNjQsLTAuODI3MTIgMS42MjkzNywtMS40NTUyMSAyLjY5MDE4LC0xLjg4NDI1YzEuMDY0NjMsLTAuNDMzNDcgMi4yNzA0MywtMC42NTAxOSAzLjYxNzQyLC0wLjY1MDE5YzAuNzMyNjQsMCAxLjQ4MDU1LDAuMDgxODQgMi4yNDM3MiwwLjI0NTQ4YzAuNzYzMTcsMC4xNTkyMiAxLjUxMTA4LDAuNDU3OCAyLjI0MzcyLDAuODk1NjljMC4zNzc3NywwLjIwMzQ2IDAuNjM1MzQsMC40ODg3NSAwLjc3MjcyLDAuODU1ODdjMC4xNDEyLDAuMzY3MTIgMC4xODY5OCwwLjc0OTcxIDAuMTM3MzcsMS4xNDc4Yy0wLjA0OTYxLDAuMzk4MDkgLTAuMTczNjIsMC43NjMgLTAuMzcyMDMsMS4wOTQ3M2MtMC4xOTg0MiwwLjMzMTczIC0wLjQ2NzQ1LDAuNTUyOSAtMC44MDcwNSwwLjY2MzQ3Yy0wLjMzNTgsMC4xMTA1OCAtMC43MTU0NywwLjA1NTI5IC0xLjEzOTAzLC0wLjE2NTg3Yy0wLjQzODgyLC0wLjIzODg0IC0wLjkxNTgsLTAuNDIyNCAtMS40MzA5NCwtMC41NTA2OGMtMC41MTEzMiwtMC4xMjgyOCAtMS4wNTMxOCwtMC4xOTI0IC0xLjYyNTU1LC0wLjE5MjRjLTAuOTgwNjcsMCAtMS43OTcyNiwwLjIwNTY3IC0yLjQ0OTc3LDAuNjE3MDJjLTAuNjUyNTEsMC40MDY5NCAtMS4xNDA5MywxLjAxMDY4IC0xLjQ2NTI4LDEuODExMjdjLTAuMzIwNTQsMC43OTYxNSAtMC40ODA4LDEuNzcxNDYgLTAuNDgwOCwyLjkyNTkxYzAsMS43MzM4NyAwLjM2NjMyLDMuMDQzMTMgMS4wOTg5NiwzLjkyNzc2YzAuNzMyNjQsMC44ODAxOSAxLjgxNjM1LDEuMzIwMyAzLjI1MTEsMS4zMjAzYzAuNDQyNjMsMCAwLjkyMzQyLC0wLjA1MDg2IDEuNDQyMzgsLTAuMTUyNTljMC4yODg1OSwtMC4wNTY1OCAwLjU3ODM2LC0wLjEyNjE0IDAuODY5MywtMC4yMDg3YzAuMjMyMjYsLTAuMDY1OSAtMC4wNDUwNiwtMi44MjMzNSAtMC4wNDUwNiwtMi44MjMzNWgtMS41Mzk2OWMtMC40OTYwNiwwIC0wLjg4MTQ2LC0wLjE0Mzc0IC0xLjE1NjIsLTAuNDMxMjVjLTAuMjcwOTMsLTAuMjkxOTIgLTAuNDA2MzgsLTAuNzAxMDcgLTAuNDA2MzgsLTEuMjI3NDJjMCwtMC41MjYzNSAwLjEzNTQ3LC0wLjkyODg1IDAuNDA2MzgsLTEuMjA3NTFjMC4yNzQ3MywtMC4yNzg2NSAwLjY2MDE0LC0wLjQxNzk4IDEuMTU2MiwtMC40MTc5OGgzLjI1MTA5YzAuNTE1MTQsMCAwLjkwODE3LDAuMTU3MDIgMS4xNzkxLDAuNDcxMDVjMC4yNzA5MywwLjMxNDA1IDAuNDA2MzgsMC43Njc0MSAwLjQwNjM4LDEuMzYwMTJ2NS42MzI4N2MwLDAuNTA4NjYgLTAuMDkxNTgsMC45NDIxNCAtMC4yNzQ3MywxLjMwMDRjLTAuMTgzMTYsMC4zNTM4NSAtMC40NzMxNiwwLjYwODE4IC0wLjg3MDAyLDAuNzYyOTljLTAuNjg2ODUsMC4yNjk4IC0xLjQzNDc2LDAuNDc5OTEgLTIuMjQzNzIsMC42MzAyOWMtMC44MDUxNSwwLjE1NDgxIC0xLjYxMDI5LDAuMjMyMjEgLTIuNDE1NDIsMC4yMzIyMXpNMjM2LjEyOTcxLDE4OS4yMTIyN2MtMC42NDQ4OCwwIC0xLjE0Mjg1LC0wLjIwNzg4IC0xLjQ5MzkxLC0wLjYyMzY2Yy0wLjM1MTA2LC0wLjQyMDIgLTAuNTI2NTgsLTEuMDA0MDUgLTAuNTI2NTgsLTEuNzUxNTV2LTEzLjQ0ODU2YzAsLTAuNzY1MiAwLjE3OTM0LC0xLjM1MTI2IDAuNTM4MDQsLTEuNzU4MmMwLjM1ODY5LC0wLjQwNjk0IDAuODYwNDcsLTAuNjEwMzkgMS41MDUzNSwtMC42MTAzOWg1LjQwODk2YzEuNzU1MjgsMCAzLjExMTgxLDAuNTIxOTQgNC4wNjk2LDEuNTY1NzljMC45NjE1OSwxLjA0Mzg3IDEuNDQyMzksMi40ODM1OSAxLjQ0MjM5LDQuMzE5MTljMCwxLjgzNTYgLTAuNDgwOCwzLjI3NTM0IC0xLjQ0MjM5LDQuMzE5MTljLTAuOTU3NzcsMS4wNDM4NyAtMi4zMTQzLDEuNTY1NzkgLTQuMDY5NiwxLjU2NTc5aC0zLjQxMTM2djQuMDQ3MTdjMCwwLjc0NzUxIC0wLjE2NzksMS4zMzEzNSAtMC41MDM3LDEuNzUxNTVjLTAuMzM1OCwwLjQxNTc3IC0wLjg0MTM5LDAuNjIzNjcgLTEuNTE2NzgsMC42MjM2N3pNMjM4LjE1MDE5LDE3OS4xOTM4NmgyLjcwNzM1YzAuNzU5MzUsMCAxLjM0MzE4LC0wLjE5MDE5IDEuNzUxNDYsLTAuNTcwNThjMC40MTIxMSwtMC4zODAzOSAwLjYxODE3LC0wLjk1MzE4IDAuNjE4MTcsLTEuNzE4MzljMCwtMC43ODI4OSAtMC4yMDYwNCwtMS4zNjAxMSAtMC42MTgxNywtMS43MzE2NWMtMC40MDgyOSwtMC4zNzU5NiAtMC45OTIxMSwtMC41NjM5NSAtMS43NTE0NiwtMC41NjM5NWgtMi43MDczNXpNMjU0LjkzMjM3LDE4OS4yNTg3MWMtMS4xMjk0OSwwIC0yLjEyNzM0LC0wLjE2NTg4IC0yLjk5MzU0LC0wLjQ5NzYxYy0wLjg2MjM4LC0wLjMzMTczIC0xLjU5MTIxLC0wLjgyNzExIC0yLjE4NjQ4LC0xLjQ4NjE3Yy0wLjU5MTQ2LC0wLjY2MzQ2IC0xLjAzNzksLTEuNDkwNiAtMS4zMzkzNSwtMi40ODEzOWMtMC4yOTc2NCwtMC45OTUyIC0wLjQ0NjQ2LC0yLjE0NzQ0IC0wLjQ0NjQ2LC0zLjQ1NjY4di04LjE4MDZjMCwtMC43Nzg0NyAwLjE3NTU0LC0xLjM2Njc0IDAuNTI2NTksLTEuNzY0ODNjMC4zNTEwNiwtMC40MDI1IDAuODQ5MDIsLTAuNjAzNzYgMS40OTM5LC0wLjYwMzc2YzAuNjYwMTQsMCAxLjE2MTkzLDAuMjAxMjUgMS41MDUzNSwwLjYwMzc2YzAuMzQzNDIsMC4zOTgwOSAwLjUxNTE0LDAuOTg2MzYgMC41MTUxNCwxLjc2NDgzdjguMjMzNjhjMCwxLjMwNDgyIDAuMjQ4MDMsMi4yODg5NyAwLjc0NDA5LDIuOTUyNDVjMC40OTk4OCwwLjY2MzQ2IDEuMjI2NzksMC45OTUyIDIuMTgwNzYsMC45OTUyYzAuOTM4NywwIDEuNjU2MDcsLTAuMzMxNzMgMi4xNTIxMywtMC45OTUyYzAuNDk5ODcsLTAuNjYzNDYgMC43NDk4MiwtMS42NDc2MiAwLjc0OTgyLC0yLjk1MjQ1di04LjIzMzY4YzAsLTAuNzc4NDcgMC4xNzE3LC0xLjM2Njc0IDAuNTE1MTQsLTEuNzY0ODNjMC4zNDM0MiwtMC40MDI1IDAuODM3NTgsLTAuNjAzNzYgMS40ODI0NiwtMC42MDM3NmMwLjY0NDg4LDAgMS4xMzUyLDAuMjAxMjUgMS40NzEsMC42MDM3NmMwLjMzOTYsMC4zOTgwOSAwLjUwOTQxLDAuOTg2MzYgMC41MDk0MSwxLjc2NDgzdjguMTgwNmMwLDEuNzUxNTUgLTAuMjYxMzgsMy4yMTc4NCAtMC43ODQxNiw0LjM5ODgxYy0wLjUxODk2LDEuMTc2NTUgLTEuMjkxNjYsMi4wNTg5NyAtMi4zMTgxMiwyLjY0NzI1Yy0xLjAyMjY0LDAuNTgzODUgLTIuMjgxODcsMC44NzU3NyAtMy43Nzc3LDAuODc1Nzd6IiBmaWxsPSIjMGZiZDhjIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MzIuMDUwMDAwMDAwMDAwMDE6MzAuNDQ5OTk5OTk5OTk5OTktLT4="
     const svgString = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2NC4xIiBoZWlnaHQ9IjY0LjI0MDc5IiB2aWV3Qm94PSIwLDAsNjQuMSw2NC4yNDA3OSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIwNy45NSwtMTQ5LjU1KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMTIuNTgxODEsMTU4Ljk4NDcyYzAsLTIuMjA5MTQgMS43OTA4NiwtNCA0LC00aDQ2LjgzNjM5YzIuMjA5MTQsMCA0LDEuNzkwODYgNCw0djQxLjU1NjA4YzAsMi4yMDkxNCAtMS43OTA4Niw0IC00LDRoLTUuMjU2OTdjLTIsMCAtMywxIC00LDJsLTQsNGMtMSwxIC0yLDIgLTQsMmgtMTJjLTIsMCAtMywtMSAtNCwtMmwtNCwtNGMtMSwtMSAtMiwtMiAtNCwtMmgtNS41Nzk0MmMtMi4yMDkxNCwwIC00LC0xLjc5MDg2IC00LC00eiIgZmlsbD0iIzBiOGU2OSIgc3Ryb2tlPSIjMGI4ZTY5IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjEyLjU4MTgxLDE1NS4yMjE5N2MwLC0yLjIwOTE0IDEuNzkwODYsLTQgNCwtNGg0Ni44MzYzOWMyLjIwOTE0LDAgNCwxLjc5MDg2IDQsNHY0MS41NTYwOGMwLDIuMjA5MTQgLTEuNzkwODYsNCAtNCw0aC01LjI1Njk3Yy0yLDAgLTMsMSAtNCwybC00LDRjLTEsMSAtMiwyIC00LDJoLTEyYy0yLDAgLTMsLTEgLTQsLTJsLTQsLTRjLTEsLTEgLTIsLTIgLTQsLTJoLTUuNTc5NDJjLTIuMjA5MTQsMCAtNCwtMS43OTA4NiAtNCwtNHoiIGZpbGw9IiMwZmJkOGMiIHN0cm9rZT0iIzNjZjFiZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIyNC4xNDE5NSwxNjUuMzcwODdjMCwtMS4zNzY1NyAxLjAwNzksLTIuNDkyNSAyLjI1MTIxLC0yLjQ5MjVoMjYuMzU5NjdjMS4yNDMzMSwwIDIuMjUxMjIsMS4xMTU5MyAyLjI1MTIyLDIuNDkyNXYyNS44OTQ2NGMwLDEuMzc2NTcgLTEuMDA3OSwyLjQ5MjQ5IC0yLjI1MTIyLDIuNDkyNDloLTI2LjM1OTY3Yy0xLjI0MzMxLDAgLTIuMjUxMjEsLTEuMTE1OTMgLTIuMjUxMjEsLTIuNDkyNDl6IiBmaWxsPSIjMDY0ODM1IiBzdHJva2U9IiMwNjQ4MzUiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yMzEuNTE2NiwxNzEuODQ1MjloLTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2NDgzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjIwLjE5OTksMTg0Ljc5MTA5aDExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2NDgzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjQ3Ljc5MzMxLDE3MS44NDUyOWgxMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiMwNjQ4MzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTI1OS4xMTAwMSwxODQuNzkxMDloLTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2NDgzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE5Ny43NzMyNHYtMTEuMzE2NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDY0ODM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNDYuMTI3ODcsMTg2LjQ1NjU0djExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2NDgzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjMzLjE4MjA2LDE1OC44NjMxM3YxMS4zMTY3IiBmaWxsPSJub25lIiBzdHJva2U9IiMwNjQ4MzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTI0Ni4xMjc4NywxNzAuMTc5ODN2LTExLjMxNjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA2NDgzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjI5LjkwMDY1LDE4NC44NTE1NmMtMS4yMTQ2MiwwIC0yLjI0NzMsLTAuMjYwOTUgLTMuMDk4MDUsLTAuNzgyODVjLTAuODQ4MTMsLTAuNTI0OTMgLTEuNDkzNCwtMS4yNTkyNCAtMS45MzU3OSwtMi4yMDI5MWMtMC40NDIzOSwtMC45NDM2NyAtMC42NjM1OCwtMi4wNDUxMyAtMC42NjM1OCwtMy4zMDQzNmMwLC0wLjk4MDA4IDAuMTMyMTksLTEuODYzMDcgMC4zOTY1OCwtMi42NDg5NWMwLjI2NzAxLC0wLjc4NTg4IDAuNjUxODEsLTEuNDYxMDIgMS4xNTQ0MSwtMi4wMjU0YzAuNTAyNiwtMC41Njc0MSAxLjExNzc2LC0wLjk5ODI5IDEuODQ1NDgsLTEuMjkyNjFjMC43MzAzNCwtMC4yOTczNiAxLjU1NzUzLC0wLjQ0NjA0IDIuNDgxNTgsLTAuNDQ2MDRjMC41MDI2LDAgMS4wMTU2NywwLjA1NjE0IDEuNTM5MjEsMC4xNjg0YzAuNTIzNTQsMC4xMDkyMyAxLjAzNjYxLDAuMzE0MDUgMS41MzkyMSwwLjYxNDQ1YzAuMjU5MTUsMC4xMzk1OCAwLjQzNTg1LDAuMzM1MjkgMC41MzAwOSwwLjU4NzE0YzAuMDk2ODYsMC4yNTE4NSAwLjEyODI3LDAuNTE0MzEgMC4wOTQyNCwwLjc4NzRjLTAuMDM0MDMsMC4yNzMwOSAtMC4xMTkxMSwwLjUyMzQyIC0wLjI1NTIyLDAuNzUwOTljLTAuMTM2MTIsMC4yMjc1NyAtMC4zMjA2NywwLjM3OTI5IC0wLjU1MzY0LDAuNDU1MTRjLTAuMjMwMzYsMC4wNzU4NiAtMC40OTA4MiwwLjAzNzkzIC0wLjc4MTM4LC0wLjExMzc5Yy0wLjMwMTAzLC0wLjE2Mzg1IC0wLjYyODI1LC0wLjI4OTc3IC0wLjk4MTY0LC0wLjM3Nzc3Yy0wLjM1MDc3LC0wLjA4OCAtMC43MjI0OSwtMC4xMzE5OSAtMS4xMTUxNCwtMC4xMzE5OWMtMC42NzI3NSwwIC0xLjIzMjkzLDAuMTQxMDkgLTEuNjgwNTYsMC40MjMyOGMtMC40NDc2MywwLjI3OTE2IC0wLjc4MjY5LDAuNjkzMzQgLTEuMDA1MiwxLjI0MjU1Yy0wLjIxOTg5LDAuNTQ2MTcgLTAuMzI5ODMsMS4yMTUyNCAtMC4zMjk4MywyLjAwNzJjMCwxLjE4OTQ1IDAuMjUxMywyLjA4NzYxIDAuNzUzOSwyLjY5NDQ3YzAuNTAyNiwwLjYwMzgyIDEuMjQ2MDMsMC45MDU3NCAyLjIzMDI4LDAuOTA1NzRjMC4zMDM2NSwwIDAuNjMzNDgsLTAuMDM0ODkgMC45ODk0OSwtMC4xMDQ2OGMwLjM1NjAxLC0wLjA2OTc5IDAuNzE0NjMsLTAuMTY4NCAxLjA3NTg4LC0wLjI5NTg0bC0wLjUxMDQ1LDEuMjA2MTR2LTIuOTkwMzFoLTEuMDU2MjRjLTAuMzQwMywwIC0wLjYwNDY5LC0wLjA5ODYxIC0wLjc5MzE2LC0wLjI5NTg0Yy0wLjE4NTg2LC0wLjIwMDI2IC0wLjI3ODc4LC0wLjQ4MDk0IC0wLjI3ODc4LC0wLjg0MjAyYzAsLTAuMzYxMDggMC4wOTI5MywtMC42MzcyIDAuMjc4NzgsLTAuODI4MzZjMC4xODg0NywtMC4xOTExNiAwLjQ1Mjg2LC0wLjI4Njc0IDAuNzkzMTYsLTAuMjg2NzRoMi4yMzAyOGMwLjM1MzM5LDAgMC42MjMwMSwwLjEwNzcyIDAuODA4ODcsMC4zMjMxNWMwLjE4NTg2LDAuMjE1NDQgMC4yNzg3OCwwLjUyNjQ1IDAuMjc4NzgsMC45MzMwNXYzLjg2NDE5YzAsMC4zNDg5NCAtMC4wNjI4MiwwLjY0NjMxIC0wLjE4ODQ3LDAuODkyMDhjLTAuMTI1NjUsMC4yNDI3NCAtMC4zMjQ1OSwwLjQxNzIyIC0wLjU5Njg0LDAuNTIzNDJjLTAuNDcxMTgsMC4xODUwOSAtMC45ODQyNiwwLjMyOTIyIC0xLjUzOTIxLDAuNDMyMzljLTAuNTUyMzQsMC4xMDYyIC0xLjEwNDY3LDAuMTU5MyAtMS42NTcsMC4xNTkzek0yMzYuNTExNjEsMTg0LjgxOTdjLTAuNDQyMzksMCAtMC43ODQsLTAuMTQyNjEgLTEuMDI0ODMsLTAuNDI3ODRjLTAuMjQwODMsLTAuMjg4MjYgLTAuMzYxMjQsLTAuNjg4NzkgLTAuMzYxMjQsLTEuMjAxNTh2LTkuMjI1ODJjMCwtMC41MjQ5MyAwLjEyMzAzLC0wLjkyNjk4IDAuMzY5MSwtMS4yMDYxNGMwLjI0NjA2LC0wLjI3OTE2IDAuNTkwMjksLTAuNDE4NzMgMS4wMzI2OCwtMC40MTg3M2gzLjcxMDU5YzEuMjA0MTQsMCAyLjEzNDczLDAuMzU4MDUgMi43OTE3OCwxLjA3NDE0YzAuNjU5NjYsMC43MTYxIDAuOTg5NDksMS43MDM3NiAwLjk4OTQ5LDIuOTYzYzAsMS4yNTkyNCAtMC4zMjk4MywyLjI0NjkxIC0wLjk4OTQ5LDIuOTYzYy0wLjY1NzA0LDAuNzE2MSAtMS41ODc2MywxLjA3NDE0IC0yLjc5MTc4LDEuMDc0MTRoLTIuMzQwMjJ2Mi43NzYzOWMwLDAuNTEyOCAtMC4xMTUxOCwwLjkxMzMyIC0wLjM0NTU0LDEuMjAxNThjLTAuMjMwMzYsMC4yODUyMiAtMC41NzcyLDAuNDI3ODQgLTEuMDQwNTMsMC40Mjc4NHpNMjM3Ljg5NzY4LDE3Ny45NDY5OWgxLjg1NzI2YzAuNTIwOTIsMCAwLjkyMTQzLC0wLjEzMDQ3IDEuMjAxNTIsLTAuMzkxNDJjMC4yODI3MSwtMC4yNjA5NSAwLjQyNDA3LC0wLjY1Mzg5IDAuNDI0MDcsLTEuMTc4ODNjMCwtMC41MzcwNyAtMC4xNDEzNSwtMC45MzMwNSAtMC40MjQwNywtMS4xODc5M2MtMC4yODAwOSwtMC4yNTc5MSAtMC42ODA2LC0wLjM4Njg3IC0xLjIwMTUyLC0wLjM4Njg3aC0xLjg1NzI2ek0yNDkuNDEwMzksMTg0Ljg1MTU2Yy0wLjc3NDg0LDAgLTEuNDU5MzcsLTAuMTEzNzkgLTIuMDUzNTksLTAuMzQxMzZjLTAuNTkxNiwtMC4yMjc1NyAtMS4wOTE1OCwtMC41Njc0MSAtMS40OTk5NCwtMS4wMTk1M2MtMC40MDU3NSwtMC40NTUxNCAtMC43MTIwMSwtMS4wMjI1NiAtMC45MTg4MSwtMS43MDIyNWMtMC4yMDQxOCwtMC42ODI3MiAtMC4zMDYyNywtMS40NzMxNiAtMC4zMDYyNywtMi4zNzEzMXYtNS42MTE5NmMwLC0wLjUzNDA0IDAuMTIwNDIsLTAuOTM3NiAwLjM2MTI0LC0xLjIxMDY5YzAuMjQwODMsLTAuMjc2MTIgMC41ODI0NCwtMC40MTQxOCAxLjAyNDgzLC0wLjQxNDE4YzAuNDUyODYsMCAwLjc5NzA5LDAuMTM4MDYgMS4wMzI2OCwwLjQxNDE4YzAuMjM1NTksMC4yNzMwOSAwLjM1MzM5LDAuNjc2NjUgMC4zNTMzOSwxLjIxMDY5djUuNjQ4MzdjMCwwLjg5NTEyIDAuMTcwMTUsMS41NzAyNSAwLjUxMDQ1LDIuMDI1NGMwLjM0MjkyLDAuNDU1MTQgMC44NDE1OSwwLjY4MjcyIDEuNDk2MDIsMC42ODI3MmMwLjY0Mzk2LDAgMS4xMzYwOCwtMC4yMjc1NyAxLjQ3NjM4LC0wLjY4MjcyYzAuMzQyOTIsLTAuNDU1MTQgMC41MTQzOCwtMS4xMzAyOCAwLjUxNDM4LC0yLjAyNTR2LTUuNjQ4MzdjMCwtMC41MzQwNCAwLjExNzc5LC0wLjkzNzYgMC4zNTMzOSwtMS4yMTA2OWMwLjIzNTU5LC0wLjI3NjEyIDAuNTc0NTksLTAuNDE0MTggMS4wMTY5OCwtMC40MTQxOGMwLjQ0MjM5LDAgMC43Nzg3NiwwLjEzODA2IDEuMDA5MTIsMC40MTQxOGMwLjIzMjk3LDAuMjczMDkgMC4zNDk0NiwwLjY3NjY1IDAuMzQ5NDYsMS4yMTA2OXY1LjYxMTk2YzAsMS4yMDE1OCAtMC4xNzkzMSwyLjIwNzQ2IC0wLjUzNzk0LDMuMDE3NjJjLTAuMzU2MDEsMC44MDcxMiAtMC44ODYwOSwxLjQxMjQ3IC0xLjU5MDI1LDEuODE2MDNjLTAuNzAxNTQsMC40MDA1MyAtMS41NjUzOCwwLjYwMDc5IC0yLjU5MTUzLDAuNjAwNzl6IiBmaWxsPSIjMGZiZDhjIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPjxwYXRoIGQ9Ik0yMDcuOTUsMjEzLjY1di02NC4xaDY0LjF2NjQuMXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjMyLjA1MDAwMDAwMDAwMDAxOjMwLjQ0OTk5OTk5OTk5OTk5LS0+";
     class GPUpen {
+        constructor() {
+            this.shaders = {};
+            this.rn = "";
+            this.sn = "";
+        }
         getInfo() {
             return {
                 id: 'polypenguingpublockspen',
@@ -30,7 +36,7 @@
                 menuIconURI: pensvg,
                 blocks: [
                     {
-                        blockType: Scratch.BlockType.REPORTER,
+                        blockType: Scratch.BlockType.COMMAND,
                         opcode: 'render',
                         text: '🗲 render shader[NAME]',
                         arguments: {
@@ -55,6 +61,64 @@
                         extensions: ["colours_pen"],
                     },
                     {
+                        blockType: Scratch.BlockType.LOOP,
+                        opcode: 'end',
+                        isTerminal: true,
+                        text: ["shader code"],
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                    },
+                    {
+                        blockType: Scratch.BlockType.COMMAND,
+                        opcode: 'compileShader',
+                        text: '🔄 compile shader with name:[NAME]',
+                        arguments: {
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'shader'
+                            },
+                        },
+                        extensions: ["colours_pen"],
+                    },
+                    {
+                        blockType: Scratch.BlockType.REPORTER,
+                        opcode: 'color',
+                        text: 'color r:[R]g:[G]b:[B]',
+                        arguments: {
+                            R: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "1"
+                            },
+                            G: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "1"
+                            },
+                            B: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "1"
+                            },
+                            
+                        },
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                        blockIconURI: pensvg,
+                    },
+                    {
+                        blockType: Scratch.BlockType.COMMAND,
+                        opcode: 'setcolor',
+                        text: 'set pixel color to[COLOR]',
+                        arguments: {
+                            R: {
+                                type: Scratch.ArgumentType.STRING,
+                            },
+                            
+                        },
+                        isTerminal: true,
+                        extensions: ["colours_pen"],
+                        branchIconURI: null,
+                        blockIconURI: pensvg,
+                    },
+                    {
                         blockType: Scratch.BlockType.REPORTER,
                         opcode: 'getx',
                         text: 'pixel x',
@@ -72,6 +136,102 @@
                     },
                 ]
             }
+        }
+        shader(args) {
+            if (this.rn == args.NAME) {
+                this.rn = ""
+                return true
+            }
+            return false
+        }
+        render(args) {
+            let program = this.shaders[args.NAME]
+            gl.useProgram(program);
+
+            // Create buffer for position data
+            var positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            var positions = [
+            -1.0,  1.0,
+            1.0,  1.0,
+            -1.0, -1.0,
+            1.0, -1.0,
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+            // Specify how to pull the data out
+            var positionAttributeLocation = gl.getAttribLocation(program, "position");
+            gl.enableVertexAttribArray(positionAttributeLocation);
+            gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+            var resolutionLocation = gl.getUniformLocation(program, "resolution");
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            // Draw
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+        getx() {
+            return "pos.x"
+        }
+        gety() {
+            return "pos.y"
+        }
+        setcolor(args) {
+            script.push(("   ".repeat(indentlayer))+"gl_FragColor ="+args.COLOR+";\n")
+        }
+        color(args) {
+            return "vec4("+args.R+", "+args.G+", "+args.B+", 1.0)";
+        }
+        end(args, util) {
+            if (util.stackFrame.done != "yes") {
+                util.stackFrame.done = 'yes'
+                return true
+            } else {
+                this.sn = ""
+            }
+        }
+        compileShader(args) {
+            GPUformat = 1
+            const name = args.NAME
+            ctype = "float"
+            this.rn = name
+            this.sn = name
+            return new Promise((resolve, reject) => {
+                const intervalId = setInterval(() => {
+                    if (this.sn != name) {
+                        clearInterval(intervalId);
+                        let code = ""
+                        for (let i = 0; i < script.length; i++) {
+                            code += script[i];
+                        }
+                        let txt = "precision mediump float;\nuniform vec2 resolution;\nvarying vec2 v_uv;\nvoid main() {\n   vec2 pos = v_uv * resolution;\n" + code + '}'
+                        console.log(txt)
+                        var vertexShaderSource = `
+                        attribute vec2 position;
+                        varying vec2 v_uv;
+                        void main() {
+                            gl_Position = vec4(position, 0.0, 1.0);
+                            v_uv = (position + 1.0) / 2.0; // Convert position to UV coordinates
+                        }
+                        `;
+                        ctype=""
+                        script = []
+                        this.sn = ""
+                        vars = {}
+                        var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+                        gl.shaderSource(vertexShader, vertexShaderSource);
+                        gl.compileShader(vertexShader);
+                        var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+                        gl.shaderSource(fragmentShader, txt);
+                        gl.compileShader(fragmentShader);
+                        var program = gl.createProgram();
+                        gl.attachShader(program, vertexShader);
+                        gl.attachShader(program, fragmentShader);
+                        gl.linkProgram(program);
+                        this.shaders[name] = program
+                        resolve();
+                    }
+                }, 1);
+            });
         }
     }
     class GPUlists {
@@ -187,9 +347,7 @@
             }
         }
         length(args) {
-            if (GPUformat === 0) {
-                return ctype+"("+vars[args.NAME+" leg"]+")"
-            }
+            return ctype+"("+vars[args.NAME+" leg"]+")"
         }
         setinlist(args) {
             if (GPUformat === 0) {
@@ -198,31 +356,27 @@
             }
         }
         addtolist(args) {
-            if (GPUformat === 0) {
-                let line= ("   ".repeat(indentlayer))+vars[args.NAME]+"["+vars[args.NAME+" leg"]+"] = "+args.I+";\n"
-                line += ("   ".repeat(indentlayer))+vars[args.NAME+" leg"]+" += 1;\n"
-                script.push(line)
-            }
+            console.log(vars)
+            console.log(args.NAME)
+            let line= ("   ".repeat(indentlayer))+vars[args.NAME]+"["+vars[args.NAME+" leg"]+"] = "+args.I+";\n"
+            line += ("   ".repeat(indentlayer))+vars[args.NAME+" leg"]+" += 1;\n"
+            script.push(line)
         }
         getitem(args) {
             if (GPUformat === 0) {
                 return vars[args.NAME]+"[i32("+args.I+")-1]"
+            } else {
+                return vars[args.NAME]+"[int("+args.I+")-1]"
             }
         }
         element(args) {
-            if (GPUformat === 0) {
-                this.list.push(args.ELE)
-            }
+            this.list.push(args.ELE)
         }
         getname() {
             const letters = ['a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
             let str = ""
             for (let i =0; i<5; i++) {
-                if (Math.floor(Math.random()*2)>0) {
-                    str+=(letters[Math.floor(Math.random()*26)].toUpperCase())
-                } else {
-                    str+=(letters[Math.floor(Math.random()*26)])
-                }
+                str+=(letters[Math.floor(Math.random()*26)])
             }
             for (const [key, value] of Object.entries(vars)) {
                 if (value === "ur"+str) {
@@ -238,17 +392,25 @@
                 this.list = []
                 return true
             } else {
-                if (GPUformat === 0) {
                 let name = this.getname()
                 let namel = this.getname()
-                let line = ("   ".repeat(indentlayer))+"var "+namel+": u32 = "+(this.list.length).toString()+";\n"
-                line += ("   ".repeat(indentlayer))+"var "+name+" : array<"+ctype+", "+args.MAX+"> = array<"+ctype+", "+args.MAX+">("
+                let line = ""
+                if (GPUformat === 0) {
+                    line = ("   ".repeat(indentlayer))+"var "+namel+": u32 = "+(this.list.length).toString()+";\n"
+                    line += ("   ".repeat(indentlayer))+"var "+name+" : array<"+ctype+", "+args.MAX+"> = array<"+ctype+", "+args.MAX+">("
+                } else {
+                    line = ("   ".repeat(indentlayer))+"int "+namel+" = "+(this.list.length).toString()+";\n"
+                    line += ("   ".repeat(indentlayer))+"float "+name+"["+args.MAX+"] = float[]("
+                }
                 
                 for (let i = 0; i < args.MAX; i++) {
                     if (i < this.list.length) {
                         line += this.list[i];
                     } else {
                         line += "0";
+                        if (GPUformat === 1) {
+                            line += ".0"
+                        }
                     }
                     
                     if (i < args.MAX - 1) {
@@ -259,8 +421,8 @@
                 line+=");\n"
                 vars[args.NAME] = name
                 vars[args.NAME+" leg"] = namel
+                
                 script.push(line)
-                }
             }
         }
     }
@@ -339,11 +501,7 @@
             const letters = ['a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
             let str = ""
             for (let i =0; i<5; i++) {
-                if (Math.floor(Math.random()*2)>0) {
-                    str+=(letters[Math.floor(Math.random()*26)].toUpperCase())
-                } else {
-                    str+=(letters[Math.floor(Math.random()*26)])
-                }
+                str+=(letters[Math.floor(Math.random()*26)])
             }
             for (const [key, value] of Object.entries(vars)) {
                 if (value === "ur"+str) {
@@ -358,22 +516,20 @@
                 const name = "ur"+this.getname()
                 vars[args.NAME] = name
                 script.push(("   ".repeat(indentlayer))+"var "+name+" = "+ctype+"("+args.VALUE+");\n")
+            } else {
+                const name = "ur"+this.getname()
+                vars[args.NAME] = name
+                script.push(("   ".repeat(indentlayer))+"float "+name+" = float("+args.VALUE+");\n")
             }
         }
         setvar(args) {
-            if (GPUformat === 0) {
-                script.push(("   ".repeat(indentlayer))+vars[args.NAME]+" = "+ctype+"("+args.VALUE+");\n")
-            }
+            script.push(("   ".repeat(indentlayer))+vars[args.NAME]+" = "+ctype+"("+args.VALUE+");\n")
         }
         changevar(args) {
-            if (GPUformat === 0) {
-                script.push(("   ".repeat(indentlayer))+vars[args.NAME]+" += "+ctype+"("+args.VALUE+");\n")
-            }
+            script.push(("   ".repeat(indentlayer))+vars[args.NAME]+" += "+ctype+"("+args.VALUE+");\n")
         }
         getvar(args) {
-            if (GPUformat === 0) {
-                return vars[args.NAME]
-            }
+            return vars[args.NAME]
         }
     }
     class GPUcontrol {
@@ -453,9 +609,7 @@
             }
         }
         inde() {
-            if (GPUformat === 0) {
-                return ctype+"(i".repeat(loops)+"+1)"
-            }
+            return ctype+"(i".repeat(loops)+"+1)"
         }
         repeat(args, util) {
             if (util.stackFrame.done != "yes") {
@@ -463,6 +617,8 @@
                 util.stackFrame.done = "yes"
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"for (var "+"i".repeat(loops)+": u32 = 0; "+"i".repeat(loops)+" < u32("+args.NUM+"); "+"i".repeat(loops)+"++){\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 1000000; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if(float(i) >="+args.NUM+") { break; }\n")
                 }
                 indentlayer ++
                 return true
@@ -471,6 +627,8 @@
                 indentlayer --
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"};\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"}\n")
                 }
             }
         }
@@ -479,6 +637,8 @@
                 util.stackFrame.done = "yes"
                 if (GPUformat === 0) {
                     script.push("   ".repeat(indentlayer)+"while (!("+args.COND+")) {\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 1000000; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if("+args.COND+") { break; }\n")
                 }
                 indentlayer ++
                 return true
@@ -486,51 +646,53 @@
                 indentlayer --
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"};\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"}\n")
                 }
             }
         }
         ifthen(args, util) {
             if (util.stackFrame.done != "yes") {
                 util.stackFrame.done = "yes"
-                if (GPUformat === 0) {
-                    script.push(("   ".repeat(indentlayer))+"if ("+args.COND+ "){\n")
-                }
+                script.push(("   ".repeat(indentlayer))+"if ("+args.COND+ "){\n")
                 indentlayer ++
                 return true
             } else {
                 indentlayer --
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"};\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"}\n")
                 }
             }
         }
         else(args, util) {
             if (util.stackFrame.done != "yes") {
                 util.stackFrame.done = "yes"
-                if (GPUformat === 0) {
-                    script[script.length-1]=(("   ".repeat(indentlayer))+"} else {\n")
-                }
+                script[script.length-1]=(("   ".repeat(indentlayer))+"} else {\n")
                 indentlayer ++
                 return true
             } else {
                 indentlayer --
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"};\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"}\n")
                 }
             }
         }
         elif(args, util) {
             if (util.stackFrame.done != "yes") {
                 util.stackFrame.done = "yes"
-                if (GPUformat === 0) {
-                    script[script.length-1]=(("   ".repeat(indentlayer))+"} else if ("+args.COND+") {\n")
-                }
+                script[script.length-1]=(("   ".repeat(indentlayer))+"} else if ("+args.COND+") {\n")
                 indentlayer ++
                 return true
             } else {
                 indentlayer --
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"};\n")
+                } else {
+                    script.push(("   ".repeat(indentlayer))+"}\n")
                 }
             }
         }
@@ -761,12 +923,14 @@
             }
         }
         round(args) {
-            if (GPUformat === 0) {
-                return ctype+"(round("+args.A+"))"
-            }
+            return ctype+"(round("+args.A+"))"
         }
         mod(args) {
-            return "("+args.A+"%"+args.B+")"
+            if (GPUformat === 0) {
+                return "("+args.A+"%"+args.B+")"
+            } else {
+                return "mod("+args.A+","+args.B+")"
+            }
         }
         and(args) {
             return "("+args.A+'&&'+args.B+")"
@@ -1141,7 +1305,7 @@
             };
         }
         gltb(){
-            var gl = canvas.getContext('webgl');
+            var gl = canvas.getContext('webgl2');
 
             // Define vertex shader
             var vertexShaderSource = `
@@ -1212,11 +1376,7 @@
             const letters = ['a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
             let str = ""
             for (let i =0; i<5; i++) {
-                if (Math.floor(Math.random()*2)>0) {
-                    str+=(letters[Math.floor(Math.random()*26)].toUpperCase())
-                } else {
-                    str+=(letters[Math.floor(Math.random()*26)])
-                }
+                str+=(letters[Math.floor(Math.random()*26)])
             }
             for (const [key, value] of Object.entries(vars)) {
                 if (value === "ur"+str) {
@@ -1579,6 +1739,7 @@
             script.push(("   ".repeat(indentlayer))+"strg[global_id.x] = "+args.CONTENT+ ";\n")
         }
         compileGpuScripts(args) {
+            GPUformat = 0
             this.test = true
             const name = args.NAME
             if (args.TYPE == "int") {
