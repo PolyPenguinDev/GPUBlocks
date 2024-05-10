@@ -1057,6 +1057,7 @@
             }
         }
         inde() {
+            console.log(loops)
             return ctype+"("+"i".repeat(loops)+"+1)"
         }
         repeat(args, util) {
@@ -1066,7 +1067,7 @@
                 if (GPUformat === 0) {
                     script.push(("   ".repeat(indentlayer))+"for (var "+"i".repeat(loops)+": u32 = 0; "+"i".repeat(loops)+" < u32("+args.NUM+"); "+"i".repeat(loops)+"++){\n")
                 } else {
-                    script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 1000000; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if(float(i) >="+args.NUM+") { break; }\n")
+                    script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 100; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if(float("+"i".repeat(loops)+") >="+args.NUM+") { break; }\n")
                 }
                 indentlayer ++
                 return true
@@ -1087,7 +1088,8 @@
                     script.push("   ".repeat(indentlayer)+"while (!("+args.COND+")) {\n")
                 } else {
                     loops++
-                    script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 1000000; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if("+args.COND+") { break; }\n")
+                    console.log(loops)
+                    script.push(("   ".repeat(indentlayer))+"for (int "+"i".repeat(loops)+" = 0; "+"i".repeat(loops)+" < 100; "+"i".repeat(loops)+"++){\n"+"   ".repeat(indentlayer+1)+"if("+args.COND+") { break; }\n")
                 }
                 indentlayer ++
                 return true
